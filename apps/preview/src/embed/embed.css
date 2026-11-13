@@ -1,12 +1,17 @@
-/* Embed overrides on top of preview.css: no padding, dark letterbox, and the 16:9 player fits the frame either way. */
+/* Embed overrides on top of preview.css: no padding, dark letterbox, and the whole device fits the frame either way.
+   Selectors carry both classes because the build can load preview.css (a shared chunk) after this file. */
 body:has(.embed-page) {
   background: #0a0a0a;
 }
 
-.embed-page {
+.preview-page.embed-page {
+  /* Width / height of the full device (housing around the 16:9 screen), measured at desktop sizes. */
+  --embed-device-ratio: 1.82;
+
   padding: 0;
+  overflow: hidden;
 }
 
-.embed-page .preview-player {
-  max-width: min(100vw, calc(100vh * 16 / 9));
+.preview-page.embed-page .preview-player {
+  max-width: min(100vw, calc(100vh * var(--embed-device-ratio)));
 }
