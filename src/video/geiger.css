@@ -1,0 +1,1793 @@
+/*
+ * Geiger: a survivor's field terminal after the end of the world.
+ *
+ * The player is a device: a green-phosphor CRT screen with a heads-up display drawn on the glass, set in a gunmetal
+ * housing whose chin carries the transport keys and a rad gauge. This layer sits on top of the structural rules in
+ * skin.css and shares their scope root, so it wins on source order alone. Tokens live in styles/themes/geiger.css.
+ * Motion is opacity, transforms and background position, and it collapses under prefers-reduced-motion.
+ */
+@layer components {
+  @scope (.media-skin[data-theme="geiger"][data-preset="video"]) {
+    /* ---------------------------------------------------------------- The device */
+
+    /* Matches the scaffold's own `:scope.media-container` rule, so the device wins on source order. */
+    :scope.media-container {
+      /* Grip, screen and side column across; the chin underneath. Auto tracks collapse when a part is hidden. */
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-rows: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "grip screen side"
+        "chin chin chin";
+      padding: 0;
+      font-family: var(--geiger-font-ui);
+      color: var(--geiger-green);
+      background-color: var(--geiger-metal);
+      /* Scuffs and rust on gunmetal, lit from above. */
+      background-image:
+        var(--geiger-grime),
+        radial-gradient(circle at 30% 40%, var(--geiger-rust) 0 1.5px, transparent 2.5px),
+        radial-gradient(circle at 60% 70%, rgb(0 0 0 / 0.4) 0 1px, transparent 2px),
+        radial-gradient(40% 60% at 4% 100%, rgb(120 52 18 / 0.35), transparent 70%),
+        radial-gradient(30% 50% at 98% 6%, rgb(120 52 18 / 0.28), transparent 70%),
+        radial-gradient(130% 150% at 50% -30%, var(--geiger-metal-hi), var(--geiger-metal) 45%, var(--geiger-metal-lo));
+      background-size: 260px 260px, 37px 29px, 23px 31px, auto, auto, auto;
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.14),
+        inset 0 0 0 calc(var(--media-spacing) * 1) rgb(0 0 0 / 0.35),
+        inset 0 0 0 calc(var(--media-spacing) * 1.25) rgb(255 255 255 / 0.05),
+        inset 0 -3px 8px rgb(0 0 0 / 0.6),
+        0 calc(var(--media-spacing) * 4) calc(var(--media-spacing) * 10) rgb(0 0 0 / 0.45);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    :scope.media-video {
+      background-color: var(--geiger-metal);
+    }
+
+    :scope.media-container:fullscreen {
+      height: 100%;
+    }
+
+    /* The screen: a rounded tube set into a dark rim. */
+    .geiger-screen {
+      grid-area: screen;
+      position: relative;
+      /* The bezel is the screen's margin rather than the device's padding, so container queries can resize it. */
+      margin: var(--geiger-bezel) var(--geiger-bezel) 0;
+      min-height: 0;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      isolation: isolate;
+      background-color: #000;
+      border-radius: var(--geiger-screen-radius);
+      box-shadow:
+        0 0 0 2px #0b0a08,
+        0 0 0 calc(var(--media-spacing) * 1.25) #3b3934,
+        0 0 0 calc(var(--media-spacing) * 1.5) #0b0a08;
+    }
+
+    :scope:fullscreen .geiger-screen {
+      aspect-ratio: auto;
+    }
+
+    .geiger-media,
+    .geiger-media > * {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* CRT glass over everything the screen draws. */
+    .geiger-glass {
+      position: absolute;
+      inset: 0;
+      z-index: 35;
+      pointer-events: none;
+      border-radius: inherit;
+      background-image:
+        repeating-linear-gradient(to bottom, rgb(0 0 0 / var(--geiger-scanlines)) 0 1px, transparent 1px 3px),
+        linear-gradient(155deg, rgb(255 255 255 / 0.07), transparent 32%),
+        radial-gradient(ellipse 75% 70% at 50% 50%, transparent 60%, rgb(0 0 0 / var(--geiger-vignette)));
+      box-shadow:
+        inset 0 0 0 1px rgb(255 255 255 / 0.05),
+        inset 0 0 calc(var(--media-spacing) * 10) rgb(0 0 0 / 0.6),
+        inset 0 0 calc(var(--media-spacing) * 30) rgb(60 255 120 / 0.05);
+    }
+
+    /* ---------------------------------------------------------------- Phosphor type */
+
+    .geiger-stat-label,
+    .geiger-tapes-title,
+    .geiger-status-mode,
+    .geiger-dialog-label {
+      font-family: var(--geiger-font-ui);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .geiger-screen :is(.geiger-title, .geiger-clock-time, .geiger-time, .geiger-stat-value, .geiger-status-mode, .geiger-script) {
+      text-shadow: var(--geiger-text-glow);
+    }
+
+    .geiger-script {
+      font-family: var(--geiger-font-script);
+      font-weight: 400;
+      line-height: 0.9;
+      color: var(--geiger-green);
+    }
+
+    /* ---------------------------------------------------------------- Screen cards */
+
+    .geiger-card {
+      position: absolute;
+      inset: 0;
+      z-index: 25;
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    /* Welcome: on the poster until the first play. */
+    .geiger-welcome {
+      inset: auto auto 38% 7%;
+      display: grid;
+      rotate: -7deg;
+      font-size: calc(var(--media-spacing) * 9);
+      /* A dark halo so the glow reads over a bright poster. */
+      filter: drop-shadow(0 0 calc(var(--media-spacing) * 2) rgb(0 0 0 / 0.85));
+    }
+
+    .geiger-script-big {
+      font-size: 2em;
+      margin-inline-start: 0.4em;
+    }
+
+    /* A swash under the name. */
+    .geiger-script-big::after {
+      content: "";
+      display: block;
+      height: 0.06em;
+      margin: 0.02em 0 0 0.1em;
+      width: 110%;
+      border-radius: 999px;
+      background-image: linear-gradient(90deg, var(--geiger-green), transparent);
+      box-shadow: var(--geiger-glow);
+    }
+
+    :scope:has(.media-play-button:not([data-started])) .geiger-welcome {
+      visibility: visible;
+      animation: geiger-flicker-in 1.2s steps(1) both;
+    }
+
+    /* Boot: the tube powers on and the terminal checks itself as the first play starts. */
+    .geiger-boot {
+      display: grid;
+      align-content: center;
+      gap: calc(var(--media-spacing) * 2.5);
+      padding-inline: 12%;
+      background-color: #010502;
+      font-family: var(--geiger-font-mono);
+      font-size: calc(var(--media-spacing) * 5);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      text-shadow: var(--geiger-text-glow);
+    }
+
+    .geiger-boot-line {
+      opacity: 0;
+    }
+
+    :scope:has(.media-play-button[data-started]) .geiger-boot {
+      animation: geiger-boot 1900ms linear both;
+    }
+
+    /* The boot owns the screen while it runs: the centre keys wait for it. */
+    :scope:has(.media-play-button[data-started]) .video-controls-center {
+      animation: geiger-hold-hidden 1900ms steps(1);
+    }
+
+    :scope:has(.media-play-button[data-started]) .geiger-boot-line {
+      animation: geiger-type 360ms steps(18) both;
+    }
+
+    :scope:has(.media-play-button[data-started]) .geiger-boot-line:nth-child(1) {
+      animation-delay: 160ms;
+    }
+
+    :scope:has(.media-play-button[data-started]) .geiger-boot-line:nth-child(2) {
+      animation-delay: 480ms;
+    }
+
+    :scope:has(.media-play-button[data-started]) .geiger-boot-line:nth-child(3) {
+      animation-delay: 800ms;
+    }
+
+    :scope:has(.media-play-button[data-started]) .geiger-boot-line:nth-child(4) {
+      animation-delay: 1120ms;
+    }
+
+    /* Signal lost: the end of the tape. The centre replay key sits between the two lines. */
+    .geiger-end {
+      display: grid;
+      place-content: center;
+      justify-items: center;
+      row-gap: calc(var(--media-spacing) * 26);
+      background-image: radial-gradient(ellipse at 50% 50%, rgb(3 26 10 / 0.86), rgb(1 8 3 / 0.95));
+      text-align: center;
+    }
+
+    .geiger-end-title {
+      font-family: var(--geiger-font-mono);
+      font-size: calc(var(--media-spacing) * 9);
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      text-shadow: var(--geiger-text-glow);
+      animation: geiger-blink 1.4s steps(1) infinite;
+    }
+
+    .geiger-end .geiger-script {
+      font-size: calc(var(--media-spacing) * 8);
+    }
+
+    :scope:has(.media-play-button[data-ended]) .geiger-end {
+      visibility: visible;
+    }
+
+    /* ---------------------------------------------------------------- Shared surfaces */
+
+    .geiger-header,
+    .geiger-panel,
+    .geiger-tapes {
+      background-color: var(--geiger-panel);
+      border: 1px solid var(--geiger-line);
+      border-radius: var(--geiger-panel-radius);
+      box-shadow:
+        var(--geiger-glow),
+        inset 0 0 calc(var(--media-spacing) * 6) rgb(77 255 124 / 0.06);
+    }
+
+    .video-controls-backdrop {
+      background-image: none;
+    }
+
+    .media-button {
+      color: var(--geiger-green);
+      background-color: transparent;
+      border-radius: var(--media-control-radius);
+      transition:
+        background-color var(--media-duration-fast),
+        color var(--media-duration-fast);
+    }
+
+    .media-button .media-button-icon,
+    .media-button .media-button-icon-base {
+      filter: drop-shadow(0 0 4px rgb(77 255 124 / 0.6));
+    }
+
+    .media-button:focus-visible {
+      outline-color: var(--media-ring);
+    }
+
+    .media-settings-button-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    /* Supported, but no device around: hide rather than show a dead, focusable control. */
+    .media-cast-button[data-availability="unavailable"],
+    .media-airplay-button[data-availability="unavailable"] {
+      display: none;
+    }
+
+    /* ---------------------------------------------------------------- Header */
+
+    .geiger-header {
+      top: var(--geiger-inset);
+      inset-inline: var(--geiger-inset);
+      justify-content: flex-start;
+      gap: calc(var(--media-spacing) * 2);
+      padding: calc(var(--media-spacing) * 2) calc(var(--media-spacing) * 3);
+      transition: opacity var(--media-duration-controls) var(--geiger-ease-out);
+    }
+
+    .geiger-id {
+      display: flex;
+      align-items: center;
+      gap: calc(var(--media-spacing) * 3);
+      min-width: 0;
+      margin-inline-end: auto;
+    }
+
+    .geiger-emblem {
+      flex: none;
+      width: calc(var(--media-spacing) * 10);
+      height: calc(var(--media-spacing) * 10);
+      color: var(--geiger-green);
+      filter: drop-shadow(0 0 5px rgb(77 255 124 / 0.65));
+    }
+
+    .geiger-id-text {
+      display: grid;
+      gap: calc(var(--media-spacing) * 0.75);
+      min-width: 0;
+    }
+
+    .geiger-title {
+      flex: none;
+      padding: 0;
+      font-size: calc(var(--media-spacing) * 5);
+      font-weight: 600;
+      line-height: 1.1;
+      color: var(--geiger-green);
+    }
+
+    .geiger-id-chapter {
+      font-size: calc(var(--media-spacing) * 3.5);
+      font-weight: 500;
+      line-height: 1;
+      color: var(--geiger-green-dim);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .geiger-id-chapter[data-empty] {
+      display: none;
+    }
+
+    .geiger-clock {
+      display: grid;
+      justify-items: end;
+      gap: calc(var(--media-spacing) * 0.75);
+      padding-inline-start: calc(var(--media-spacing) * 3);
+      border-inline-start: 1px solid var(--geiger-line);
+    }
+
+    .geiger-clock-time {
+      font-family: var(--geiger-font-mono);
+      font-size: calc(var(--media-spacing) * 5.25);
+      line-height: 1;
+    }
+
+    .geiger-clock-date {
+      font-size: calc(var(--media-spacing) * 3.25);
+      font-weight: 500;
+      line-height: 1;
+      color: var(--geiger-green-dim);
+    }
+
+    /* ---------------------------------------------------------------- Centre */
+
+    .video-controls-center {
+      gap: calc(var(--media-spacing) * 6);
+    }
+
+    .video-controls-center-button {
+      background-color: transparent;
+    }
+
+    .video-controls-center-play {
+      width: calc(var(--media-spacing) * 19);
+      height: calc(var(--media-spacing) * 19);
+      background-color: rgb(3 18 8 / 0.6);
+      border: 2px solid var(--geiger-green);
+      border-radius: 50%;
+      box-shadow:
+        var(--geiger-glow),
+        inset 0 0 calc(var(--media-spacing) * 5) rgb(77 255 124 / 0.25);
+    }
+
+    .video-controls-center-play-icon {
+      width: calc(var(--media-spacing) * 8.5);
+      height: calc(var(--media-spacing) * 8.5);
+    }
+
+    .video-controls-center-seek {
+      width: calc(var(--media-spacing) * 12);
+      height: calc(var(--media-spacing) * 12);
+      border-radius: 50%;
+    }
+
+    .video-controls-center-seek-icon {
+      width: calc(var(--media-spacing) * 6.5);
+      height: calc(var(--media-spacing) * 6.5);
+    }
+
+    @media (hover: hover) {
+      .video-controls-center-button:hover {
+        background-color: rgb(3 18 8 / 0.75);
+      }
+    }
+
+    /* Before the first play and after the end, the centre holds one key. */
+    :scope:has(.media-play-button:not([data-started])) .video-controls-center-seek,
+    :scope:has(.media-play-button[data-ended]) .video-controls-center-seek {
+      display: none;
+    }
+
+    /* Buffering: a radar sweep. */
+    .media-buffering-indicator-controls:not([data-visible]) .media-buffering-indicator-backdrop {
+      background-color: rgb(0 0 0 / 0.3);
+    }
+
+    .geiger-radar {
+      width: calc(var(--media-spacing) * 20);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 2px solid var(--geiger-line);
+      background-image:
+        conic-gradient(from 0deg, rgb(77 255 124 / 0.6), transparent 26%),
+        repeating-radial-gradient(circle, transparent 0 calc(var(--media-spacing) * 3), var(--geiger-line) calc(var(--media-spacing) * 3) calc(var(--media-spacing) * 3 + 1px));
+      box-shadow: var(--geiger-glow);
+      animation: geiger-spin 1.4s linear infinite;
+    }
+
+    /* ---------------------------------------------------------------- Holotapes */
+
+    .geiger-tapes {
+      position: absolute;
+      top: calc(var(--geiger-inset) + var(--media-spacing) * 21);
+      bottom: calc(var(--geiger-inset) + var(--media-spacing) * 30);
+      inset-inline-end: var(--geiger-inset);
+      width: calc(var(--media-spacing) * 62);
+      display: none;
+      flex-direction: column;
+      gap: calc(var(--media-spacing) * 1.5);
+      padding: calc(var(--media-spacing) * 2.5);
+      pointer-events: auto;
+      transition: opacity var(--media-duration-controls) var(--geiger-ease-out);
+    }
+
+    /* Only on players with room for it. */
+    @container media-root (width >= 50rem) {
+      :scope:has(geiger-status:is([data-mode="pause"], [data-mode="standby"])) .geiger-tapes:not([data-empty]) {
+        display: flex;
+      }
+    }
+
+    @scope (.video-controls-content) {
+      &:not([data-visible]) .geiger-tapes {
+        opacity: 0;
+        pointer-events: none;
+      }
+    }
+
+    .geiger-tapes-title {
+      padding: calc(var(--media-spacing) * 0.5) calc(var(--media-spacing) * 2) calc(var(--media-spacing) * 2);
+      font-size: calc(var(--media-spacing) * 3);
+      color: var(--geiger-green-dim);
+      border-bottom: 1px solid var(--geiger-line);
+    }
+
+    .geiger-tapes-list {
+      display: grid;
+      align-content: start;
+      gap: calc(var(--media-spacing) * 0.5);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    .geiger-tape {
+      display: grid;
+      grid-template-columns: calc(var(--media-spacing) * 3) auto minmax(0, 1fr);
+      align-items: center;
+      gap: calc(var(--media-spacing) * 2);
+      width: 100%;
+      padding: calc(var(--media-spacing) * 1.25) calc(var(--media-spacing) * 2.5);
+      font: inherit;
+      font-size: calc(var(--media-spacing) * 3.75);
+      font-weight: 600;
+      line-height: 1.1;
+      text-align: start;
+      color: var(--geiger-green);
+      background-color: transparent;
+      border: 0;
+      border-radius: calc(var(--media-spacing) * 1);
+      cursor: pointer;
+      transition: background-color var(--media-duration-fast);
+    }
+
+    @media (hover: hover) {
+      .geiger-tape:hover {
+        background-color: var(--geiger-green-faint);
+      }
+    }
+
+    .geiger-tape:focus-visible {
+      outline: 2px solid var(--media-ring);
+      outline-offset: -2px;
+    }
+
+    .geiger-tape-number {
+      font-family: var(--geiger-font-mono);
+      font-weight: 400;
+      color: var(--geiger-green-dim);
+    }
+
+    .geiger-tape-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .geiger-tape[aria-current] {
+      color: var(--geiger-panel-solid);
+      background-color: var(--geiger-green);
+      box-shadow: var(--geiger-glow);
+    }
+
+    .geiger-tape[aria-current] .geiger-tape-number {
+      color: inherit;
+    }
+
+    .geiger-tape[aria-current] .geiger-tape-mark {
+      height: calc(var(--media-spacing) * 3);
+      background-color: currentColor;
+      clip-path: polygon(10% 0, 100% 50%, 10% 100%);
+    }
+
+    /* ---------------------------------------------------------------- Status panel */
+
+    .geiger-panel {
+      inset-inline: var(--geiger-inset);
+      bottom: var(--geiger-inset);
+      gap: calc(var(--media-spacing) * 2);
+      padding: calc(var(--media-spacing) * 2) calc(var(--media-spacing) * 3) calc(var(--media-spacing) * 2.5);
+      transition:
+        opacity var(--media-duration-controls) var(--geiger-ease-out),
+        translate var(--media-duration-controls) var(--geiger-ease-out);
+    }
+
+    @scope (.video-controls-content) {
+      &:not([data-visible]) .geiger-panel {
+        translate: 0 var(--media-hidden-offset);
+      }
+    }
+
+    /* The tape. */
+    .geiger-tape-row {
+      display: flex;
+      align-items: center;
+      gap: calc(var(--media-spacing) * 3);
+    }
+
+    .geiger-time {
+      flex: none;
+      min-width: 5ch;
+      font-family: var(--geiger-font-mono);
+      font-size: calc(var(--media-spacing) * 4);
+      font-variant-numeric: tabular-nums;
+      color: var(--geiger-green);
+    }
+
+    .geiger-time-duration {
+      text-align: end;
+      color: var(--geiger-green-dim);
+    }
+
+    .media-time-slider {
+      flex: 1;
+      min-width: 0;
+      height: calc(var(--media-spacing) * 6);
+    }
+
+    .media-time-slider-track {
+      height: calc(var(--media-spacing) * 2.5);
+    }
+
+    .media-time-slider-track::before {
+      background-color: var(--geiger-green-faint);
+      border-radius: 999px;
+    }
+
+    .media-time-slider-buffer {
+      background-color: rgb(77 255 124 / 0.22);
+      border-radius: 999px;
+    }
+
+    .media-time-slider-fill {
+      clip-path: inset(-8px 0);
+      background-color: var(--geiger-green);
+      background-image: repeating-linear-gradient(
+        90deg,
+        transparent 0 calc(var(--media-spacing) * 2.25),
+        rgb(0 0 0 / 0.38) 0 calc(var(--media-spacing) * 2.75)
+      );
+      border-radius: 999px;
+      box-shadow: var(--geiger-glow);
+    }
+
+    .media-time-slider-thumb {
+      width: calc(var(--media-spacing) * 1.5);
+      height: calc(var(--media-spacing) * 5.5);
+      border: 0;
+      border-radius: 2px;
+      background-color: var(--geiger-green-bright);
+      box-shadow: var(--geiger-glow);
+    }
+
+    .media-time-slider-thumb:focus-visible {
+      outline: 2px solid var(--media-ring);
+      outline-offset: 3px;
+    }
+
+    .media-slider-thumbnail {
+      border: 1px solid var(--geiger-green);
+      border-radius: calc(var(--media-spacing) * 1.5);
+      box-shadow: var(--geiger-glow);
+    }
+
+    .media-time-slider-preview-meta {
+      font-family: var(--geiger-font-mono);
+      font-size: calc(var(--media-spacing) * 3.75);
+      color: var(--geiger-green);
+      background-color: var(--geiger-panel-solid);
+      border: 1px solid var(--geiger-line);
+      border-radius: calc(var(--media-spacing) * 1);
+    }
+
+    .media-time-slider-chapter-title {
+      opacity: 1;
+      font-family: var(--geiger-font-ui);
+      font-weight: 600;
+      color: var(--geiger-green-dim);
+    }
+
+    /* The stat cells. */
+    .geiger-stats {
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .geiger-stat:not(geiger-rate),
+    .geiger-stat-button {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      grid-template-areas:
+        "icon readout"
+        "bar bar";
+      align-items: center;
+      column-gap: calc(var(--media-spacing) * 2);
+      row-gap: calc(var(--media-spacing) * 1.5);
+    }
+
+    .geiger-stat {
+      min-width: calc(var(--media-spacing) * 34);
+      padding-inline: calc(var(--media-spacing) * 3);
+      border-inline-start: 1px solid var(--geiger-line);
+    }
+
+    .geiger-stat:first-child {
+      padding-inline-start: 0;
+      border-inline-start: 0;
+    }
+
+    geiger-rate.geiger-stat {
+      display: block;
+      padding-inline: calc(var(--media-spacing) * 1);
+    }
+
+    .geiger-stat-button {
+      width: 100%;
+      height: 100%;
+      padding: calc(var(--media-spacing) * 1) calc(var(--media-spacing) * 2);
+      font: inherit;
+      color: inherit;
+      background-color: transparent;
+      border: 0;
+      border-radius: var(--media-control-radius);
+      cursor: pointer;
+      transition: background-color var(--media-duration-fast);
+    }
+
+    @media (hover: hover) {
+      .geiger-stat-button:hover {
+        background-color: var(--media-button-highlight);
+      }
+    }
+
+    .geiger-stat-button:focus-visible {
+      outline: 2px solid var(--media-ring);
+      outline-offset: 0;
+    }
+
+    .geiger-stat-key,
+    .geiger-stat-icon {
+      grid-area: icon;
+    }
+
+    .geiger-stat-key {
+      width: calc(var(--media-spacing) * 8);
+      height: calc(var(--media-spacing) * 8);
+    }
+
+    .geiger-stat-icon {
+      width: calc(var(--media-spacing) * 6);
+      height: calc(var(--media-spacing) * 6);
+      margin-inline: var(--media-spacing);
+      filter: drop-shadow(0 0 4px rgb(77 255 124 / 0.6));
+    }
+
+    .geiger-stat-readout {
+      grid-area: readout;
+      display: flex;
+      align-items: baseline;
+      gap: calc(var(--media-spacing) * 2);
+      white-space: nowrap;
+    }
+
+    .geiger-stat-label {
+      font-size: calc(var(--media-spacing) * 3);
+      color: var(--geiger-green-dim);
+    }
+
+    .geiger-stat-value {
+      font-family: var(--geiger-font-mono);
+      font-size: calc(var(--media-spacing) * 4.5);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .geiger-bar {
+      grid-area: bar;
+      position: relative;
+      display: block;
+      height: calc(var(--media-spacing) * 2);
+      border-radius: 999px;
+      background-color: var(--geiger-green-faint);
+    }
+
+    .geiger-bar-static .geiger-bar-fill {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 0;
+      width: calc(var(--geiger-level, 0) * 100%);
+      border-radius: inherit;
+      background-color: var(--geiger-green);
+      box-shadow: var(--geiger-glow);
+      transition: width var(--media-duration-slow) var(--geiger-ease-out);
+    }
+
+    /* The VOL bar is the volume slider itself. */
+    .geiger-volume-slider {
+      height: calc(var(--media-spacing) * 5);
+      background-color: transparent;
+      cursor: pointer;
+      touch-action: none;
+    }
+
+    .geiger-volume-slider[data-disabled] {
+      cursor: not-allowed;
+      opacity: 0.4;
+    }
+
+    .geiger-volume-slider .geiger-bar-track {
+      position: absolute;
+      inset-inline: 0;
+      top: 50%;
+      height: calc(var(--media-spacing) * 2);
+      translate: 0 -50%;
+      border-radius: 999px;
+      background-color: var(--geiger-green-faint);
+    }
+
+    .geiger-volume-slider .geiger-bar-fill {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 0;
+      width: var(--media-slider-fill, 0%);
+      border-radius: inherit;
+      background-color: var(--geiger-green);
+      box-shadow: var(--geiger-glow);
+    }
+
+    .geiger-bar-thumb {
+      position: absolute;
+      top: 50%;
+      left: var(--media-slider-fill, 0%);
+      width: calc(var(--media-spacing) * 1.5);
+      height: calc(var(--media-spacing) * 4.5);
+      translate: -50% -50%;
+      border-radius: 2px;
+      background-color: var(--geiger-green-bright);
+      box-shadow: var(--geiger-glow);
+    }
+
+    .geiger-bar-thumb:focus-visible {
+      outline: 2px solid var(--media-ring);
+      outline-offset: 3px;
+    }
+
+    /* Vitals: the heartbeat and the status line. */
+    .geiger-status {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: calc(var(--media-spacing) * 3);
+    }
+
+    .geiger-ecg {
+      flex: none;
+      width: calc(var(--media-spacing) * 26);
+      height: calc(var(--media-spacing) * 9);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 40'%3E%3Cpath d='M0 20h120' fill='none' stroke='%234dff7c' stroke-width='2'/%3E%3C/svg%3E");
+      background-size: calc(var(--media-spacing) * 27) 100%;
+      background-repeat: repeat-x;
+      filter: drop-shadow(0 0 3px rgb(77 255 124 / 0.8));
+      mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+    }
+
+    :scope:has(geiger-status:is([data-mode="play"], [data-mode="fast"], [data-mode="slow"], [data-mode="live"])) .geiger-ecg {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 40'%3E%3Cpath d='M0 22h38l4-4 4 4h6l4-17 5 31 4-14h7l5-5 6 5h37' fill='none' stroke='%234dff7c' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E");
+      animation: geiger-ecg 1.15s linear infinite;
+    }
+
+    :scope:has(geiger-status[data-mode="fast"]) .geiger-ecg {
+      animation-duration: 0.6s;
+    }
+
+    :scope:has(geiger-status[data-mode="slow"]) .geiger-ecg {
+      animation-duration: 2.2s;
+    }
+
+    .geiger-status-text {
+      display: grid;
+      gap: calc(var(--media-spacing) * 1);
+      min-width: 0;
+    }
+
+    .geiger-status-mode {
+      font-size: calc(var(--media-spacing) * 3.25);
+      color: var(--geiger-green);
+    }
+
+    .geiger-status[data-mode="signal"] .geiger-status-mode {
+      animation: geiger-blink 0.8s steps(1) infinite;
+    }
+
+    .geiger-status-note {
+      font-size: calc(var(--media-spacing) * 4);
+      font-weight: 500;
+      font-style: italic;
+      line-height: 1.1;
+      color: var(--geiger-green-bright);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .video-controls-end {
+      margin-inline-start: auto;
+      padding-inline-start: calc(var(--media-spacing) * 2);
+      border-inline-start: 1px solid var(--geiger-line);
+    }
+
+    .video-controls-end .media-button {
+      width: calc(var(--media-spacing) * 9);
+      height: calc(var(--media-spacing) * 9);
+    }
+
+    @media (hover: hover) {
+      .video-controls-end .media-button:hover,
+      .geiger-stat-key:hover,
+      .video-controls-top .media-button:hover {
+        background-color: var(--media-button-highlight);
+      }
+    }
+
+    /* ---------------------------------------------------------------- Popups */
+
+    .media-menu-popup,
+    .media-tooltip-popup,
+    .media-indicator,
+    .media-dialog-popup {
+      color: var(--geiger-green);
+      background-color: var(--geiger-panel-solid);
+      border: 1px solid var(--geiger-line);
+      box-shadow: var(--geiger-glow);
+      font-family: var(--geiger-font-ui);
+    }
+
+    .media-menu-popup {
+      min-width: calc(var(--media-spacing) * 56);
+      padding: calc(var(--media-spacing) * 1.5);
+      font-size: calc(var(--media-spacing) * 4);
+      font-weight: 600;
+    }
+
+    .media-menu-item,
+    .media-menu-radio-item,
+    .media-menu-back-item {
+      color: var(--geiger-green);
+    }
+
+    .media-menu-item[data-highlighted],
+    .media-menu-radio-item[data-highlighted],
+    .media-menu-back-item[data-highlighted] {
+      color: var(--geiger-panel-solid);
+      background-color: var(--geiger-green);
+    }
+
+    .media-menu-hint-label {
+      font-family: var(--geiger-font-mono);
+      font-weight: 400;
+      color: var(--geiger-green-dim);
+    }
+
+    [data-highlighted] .media-menu-hint-label {
+      color: inherit;
+    }
+
+    .media-menu-separator {
+      background-color: var(--geiger-line);
+    }
+
+    .media-tooltip-popup {
+      padding: var(--media-spacing) calc(var(--media-spacing) * 2.5);
+      border-radius: calc(var(--media-spacing) * 1);
+      font-size: calc(var(--media-spacing) * 3.75);
+      font-weight: 600;
+    }
+
+    .media-tooltip-shortcut {
+      font-family: var(--geiger-font-mono);
+      opacity: 0.7;
+    }
+
+    .media-indicator {
+      border-radius: calc(var(--media-spacing) * 1.5);
+      font-family: var(--geiger-font-mono);
+      font-size: calc(var(--media-spacing) * 4);
+    }
+
+    .geiger-dialog-label {
+      font-size: calc(var(--media-spacing) * 3.25);
+      color: var(--geiger-amber);
+    }
+
+    .media-dialog-title {
+      font-size: calc(var(--media-spacing) * 6);
+      font-weight: 700;
+    }
+
+    .media-dialog-close {
+      color: var(--geiger-green);
+    }
+
+    /* ---------------------------------------------------------------- Hardware */
+
+    /* The rubber grip down the left edge. */
+    .geiger-grip {
+      grid-area: grip;
+      width: calc(var(--media-spacing) * 6);
+      margin: calc(var(--geiger-bezel) * 2.5) 0 calc(var(--geiger-bezel) * 1.5) var(--geiger-bezel);
+      border-radius: calc(var(--media-spacing) * 2);
+      background-image: repeating-linear-gradient(
+        to bottom,
+        #0e0d0c 0 calc(var(--media-spacing) * 1.25),
+        #4a463f calc(var(--media-spacing) * 1.25) calc(var(--media-spacing) * 1.75),
+        #1c1b18 calc(var(--media-spacing) * 1.75) calc(var(--media-spacing) * 3)
+      );
+      box-shadow:
+        inset 2px 0 3px rgb(0 0 0 / 0.6),
+        inset -1px 0 0 rgb(255 255 255 / 0.08),
+        1px 0 0 rgb(255 255 255 / 0.06);
+    }
+
+    /* The side column: knobs, menu plate and gauge. */
+    .geiger-side {
+      grid-area: side;
+      width: var(--geiger-side);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: calc(var(--media-spacing) * 3);
+      padding: var(--geiger-bezel) var(--geiger-bezel) 0 0;
+    }
+
+    .geiger-knob-cell {
+      display: grid;
+      justify-items: center;
+      gap: calc(var(--media-spacing) * 1.5);
+    }
+
+    .geiger-knob-label {
+      font-family: var(--geiger-font-ui);
+      font-size: calc(var(--media-spacing) * 2.75);
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      line-height: 1;
+      text-transform: uppercase;
+      color: #8f887b;
+      text-shadow: 0 1px 0 rgb(0 0 0 / 0.8);
+    }
+
+    /* A knurled metal knob; the cap carries the pointer and turns. */
+    .geiger-knob {
+      position: relative;
+      display: block;
+      width: var(--geiger-knob);
+      height: var(--geiger-knob);
+      border-radius: 50%;
+      cursor: grab;
+      touch-action: none;
+      background-image:
+        radial-gradient(circle, transparent 62%, rgb(0 0 0 / 0.35) 70%),
+        repeating-conic-gradient(#2b2925 0 5deg, #67625a 5deg 7deg, #1f1d1a 7deg 10deg);
+      box-shadow:
+        0 calc(var(--media-spacing) * 1.5) calc(var(--media-spacing) * 3) rgb(0 0 0 / 0.7),
+        0 0 0 calc(var(--media-spacing) * 1) #12110f,
+        0 0 0 calc(var(--media-spacing) * 1.5) #3d3a34;
+    }
+
+    .geiger-knob[data-dragging] {
+      cursor: grabbing;
+    }
+
+    .geiger-knob:focus-visible {
+      outline: 2px solid var(--geiger-amber-hot);
+      outline-offset: calc(var(--media-spacing) * 2.5);
+    }
+
+    .geiger-knob-cap {
+      position: absolute;
+      inset: 16%;
+      border-radius: 50%;
+      rotate: var(--geiger-turn, 0deg);
+      background-image:
+        radial-gradient(circle at 35% 28%, rgb(255 255 255 / 0.35), transparent 40%),
+        radial-gradient(circle at 50% 50%, #57534b, #2a2824 70%, #151412);
+      box-shadow:
+        inset 0 -3px 6px rgb(0 0 0 / 0.6),
+        inset 0 2px 2px rgb(255 255 255 / 0.18),
+        0 1px 3px rgb(0 0 0 / 0.6);
+      transition: rotate 120ms var(--geiger-ease-out);
+    }
+
+    /* The pointer: a glowing amber line from the centre to 12 o'clock. */
+    .geiger-knob-cap::after {
+      content: "";
+      position: absolute;
+      left: calc(50% - 1.5px);
+      top: 9%;
+      width: 3px;
+      height: 30%;
+      border-radius: 2px;
+      background-color: var(--geiger-amber);
+      box-shadow: 0 0 6px rgb(255 160 40 / 0.9);
+    }
+
+    .geiger-knob[data-dragging] .geiger-knob-cap {
+      transition: none;
+    }
+
+    /* The amber menu plate: the device's main keys, lit like a side menu. */
+    .geiger-plate {
+      display: grid;
+      align-self: stretch;
+      gap: calc(var(--media-spacing) * 0.25);
+      padding: calc(var(--media-spacing) * 2) calc(var(--media-spacing) * 1.5);
+      border-radius: calc(var(--media-spacing) * 2);
+      background-color: #120f0b;
+      background-image: linear-gradient(to bottom, rgb(255 160 40 / 0.05), transparent 40%);
+      box-shadow:
+        inset 0 2px 6px rgb(0 0 0 / 0.85),
+        inset 0 0 0 1px rgb(0 0 0 / 0.6),
+        0 1px 0 rgb(255 255 255 / 0.08);
+    }
+
+    .geiger-plate-key {
+      position: relative;
+      display: block;
+      width: 100%;
+      padding: calc(var(--media-spacing) * 1) calc(var(--media-spacing) * 1) calc(var(--media-spacing) * 1) calc(var(--media-spacing) * 6);
+      font: inherit;
+      font-family: var(--geiger-font-ui);
+      font-size: calc(var(--media-spacing) * 4.25);
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      line-height: 1.1;
+      text-align: start;
+      text-transform: uppercase;
+      color: var(--geiger-amber);
+      text-shadow: 0 0 6px rgb(255 160 40 / 0.6);
+      background-color: transparent;
+      border: 0;
+      border-radius: calc(var(--media-spacing) * 1);
+      cursor: pointer;
+      transition: background-color var(--media-duration-fast);
+    }
+
+    /* The marker: a lit triangle beside the key that's on, a dim one under the finger. */
+    .geiger-plate-key::before {
+      content: "";
+      position: absolute;
+      left: calc(var(--media-spacing) * 1.5);
+      top: 50%;
+      width: calc(var(--media-spacing) * 3);
+      height: calc(var(--media-spacing) * 3.25);
+      translate: 0 -50%;
+      background-color: currentColor;
+      clip-path: polygon(0 0, 100% 50%, 0 100%);
+      filter: drop-shadow(0 0 4px rgb(255 160 40 / 0.9));
+      opacity: 0;
+      transition: opacity var(--media-duration-fast);
+    }
+
+    @media (hover: hover) {
+      .geiger-plate-key:hover {
+        background-color: rgb(255 160 40 / 0.08);
+      }
+
+      .geiger-plate-key:hover::before {
+        opacity: 0.45;
+      }
+    }
+
+    .geiger-plate-key:focus-visible {
+      outline: 2px solid var(--geiger-amber-hot);
+      outline-offset: -2px;
+    }
+
+    .geiger-plate-key:is(
+        .media-play-button[data-started]:not([data-paused]),
+        [data-muted],
+        [data-active],
+        [data-pip],
+        [data-fullscreen],
+        [aria-expanded="true"]
+      )::before {
+      opacity: 1;
+    }
+
+    .geiger-word-pause,
+    .geiger-word-muted {
+      display: none;
+    }
+
+    .media-play-button[data-started]:not([data-paused]) .geiger-word-play,
+    [data-muted] .geiger-word-sound {
+      display: none;
+    }
+
+    .media-play-button[data-started]:not([data-paused]) .geiger-word-pause,
+    [data-muted] .geiger-word-muted {
+      display: inline;
+    }
+
+    .geiger-plate-key[data-availability="unavailable"],
+    .geiger-plate-key[data-hidden] {
+      display: none;
+    }
+
+    /* The status panel's own buttons wait in reserve until the side column hides. */
+    .geiger-stats .geiger-compact {
+      display: none;
+    }
+
+    .geiger-chin {
+      grid-area: chin;
+      position: relative;
+      height: var(--geiger-chin);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center;
+      column-gap: calc(var(--media-spacing) * 5);
+      padding-inline: calc(var(--geiger-bezel) + var(--media-spacing) * 2);
+    }
+
+    /* Two screws holding the housing together. */
+    .geiger-chin::before,
+    .geiger-chin::after {
+      content: "";
+      position: absolute;
+      bottom: calc(var(--media-spacing) * 3);
+      width: calc(var(--media-spacing) * 3);
+      height: calc(var(--media-spacing) * 3);
+      border-radius: 50%;
+      background-image:
+        linear-gradient(45deg, transparent 44%, rgb(0 0 0 / 0.7) 44% 56%, transparent 56%),
+        radial-gradient(circle at 35% 30%, #8a857a, #3b3833 65%, #1a1916);
+      box-shadow: 0 1px 1px rgb(255 255 255 / 0.12), inset 0 0 0 1px rgb(0 0 0 / 0.5);
+    }
+
+    .geiger-chin::before {
+      left: calc(var(--media-spacing) * 1.5);
+    }
+
+    .geiger-chin::after {
+      right: calc(var(--media-spacing) * 1.5);
+    }
+
+    /* Engraved into the metal. */
+    .geiger-brand {
+      justify-self: start;
+      rotate: -5deg;
+      font-family: var(--geiger-font-script);
+      font-size: calc(var(--media-spacing) * 9);
+      line-height: 1;
+      color: #7a746a;
+      text-shadow:
+        0 1px 0 rgb(255 255 255 / 0.2),
+        0 -1px 0 rgb(0 0 0 / 0.8);
+      white-space: nowrap;
+    }
+
+    .geiger-keys {
+      display: flex;
+      align-items: start;
+      gap: calc(var(--media-spacing) * 8);
+    }
+
+    /* Every label on one line, every key centred on the big PLAY key. */
+    .geiger-key-cell {
+      display: grid;
+      grid-template-rows: auto calc(var(--geiger-key) * 1.2);
+      justify-items: center;
+      align-items: center;
+      gap: calc(var(--media-spacing) * 2);
+    }
+
+    .geiger-keys[data-empty] .geiger-key-cell:not(:has(.geiger-key-play)) {
+      visibility: hidden;
+    }
+
+    .geiger-key-label {
+      font-family: var(--geiger-font-ui);
+      font-size: calc(var(--media-spacing) * 3.75);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      text-transform: uppercase;
+      color: var(--geiger-amber);
+      text-shadow: 0 0 6px rgb(255 160 40 / 0.65);
+    }
+
+    .geiger-key-word-pause {
+      display: none;
+    }
+
+    :scope:has(.geiger-key-play[data-started]:not([data-paused])) .geiger-key-word-play {
+      display: none;
+    }
+
+    :scope:has(.geiger-key-play[data-started]:not([data-paused])) .geiger-key-word-pause {
+      display: inline;
+    }
+
+    /* A round amber lens in a chrome ring. */
+    .geiger-key {
+      display: block;
+      width: var(--geiger-key);
+      height: var(--geiger-key);
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      cursor: pointer;
+      background-image: radial-gradient(circle at 50% 40%, #ff9a5c 0 14%, #c2410c 42%, #4a1806 72%);
+      box-shadow:
+        0 0 0 3px #12110f,
+        0 0 0 calc(var(--media-spacing) * 1.5) #5c5850,
+        0 0 0 calc(var(--media-spacing) * 1.5 + 1px) #0c0b09,
+        0 calc(var(--media-spacing) * 1) calc(var(--media-spacing) * 3) rgb(0 0 0 / 0.65),
+        inset 0 calc(var(--media-spacing) * -1) calc(var(--media-spacing) * 1.5) rgb(0 0 0 / 0.55),
+        inset 0 1px 2px rgb(255 255 255 / 0.35);
+      transition:
+        filter var(--media-duration-fast),
+        translate var(--media-duration-fast);
+    }
+
+    .geiger-key-play {
+      width: calc(var(--geiger-key) * 1.2);
+      height: calc(var(--geiger-key) * 1.2);
+      background-image: radial-gradient(circle at 50% 44%, #fff4cf 0 9%, var(--geiger-amber) 30%, var(--geiger-lens) 55%, #6d2405 78%);
+      box-shadow:
+        0 0 0 3px #12110f,
+        0 0 0 calc(var(--media-spacing) * 1.5) #5c5850,
+        0 0 0 calc(var(--media-spacing) * 1.5 + 1px) #0c0b09,
+        0 0 calc(var(--media-spacing) * 6) calc(var(--media-spacing) * 1) rgb(255 140 30 / 0.55),
+        inset 0 calc(var(--media-spacing) * -1) calc(var(--media-spacing) * 1.5) rgb(0 0 0 / 0.4),
+        inset 0 1px 2px rgb(255 255 255 / 0.5);
+    }
+
+    /* Waiting for a finger: the PLAY lens breathes while the tape is stopped. */
+    :scope:has(.geiger-key-play[data-paused]) .geiger-key-play {
+      animation: geiger-breathe 2.4s ease-in-out infinite;
+    }
+
+    @media (hover: hover) {
+      .geiger-key:hover {
+        filter: brightness(1.18) saturate(1.1);
+      }
+    }
+
+    .geiger-key:active {
+      translate: 0 1px;
+      filter: brightness(0.85);
+    }
+
+    .geiger-key:focus-visible {
+      outline: 2px solid var(--geiger-amber-hot);
+      outline-offset: calc(var(--media-spacing) * 2.5);
+    }
+
+    .geiger-key:disabled {
+      cursor: not-allowed;
+      filter: grayscale(0.7) brightness(0.6);
+    }
+
+    .geiger-grille {
+      justify-self: end;
+      width: calc(var(--media-spacing) * 22);
+      height: calc(var(--media-spacing) * 11);
+      border-radius: calc(var(--media-spacing) * 1.5);
+      background-image: repeating-linear-gradient(90deg, #0a0908 0 calc(var(--media-spacing) * 1.25), transparent 0 calc(var(--media-spacing) * 2.75));
+      box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.6), 0 1px 0 rgb(255 255 255 / 0.08);
+    }
+
+    /* The rad gauge: a cream dial whose needle reads the volume, and trembles while the tape plays. */
+    .geiger-gauge {
+      display: grid;
+      place-items: center;
+      width: var(--geiger-gauge);
+      height: var(--geiger-gauge);
+      border-radius: 50%;
+      background-image: radial-gradient(circle at 40% 30%, #9a958a, #4a4740 55%, #1a1916);
+      box-shadow:
+        0 calc(var(--media-spacing) * 1) calc(var(--media-spacing) * 3) rgb(0 0 0 / 0.6),
+        inset 0 1px 1px rgb(255 255 255 / 0.3);
+    }
+
+    .geiger-gauge-face {
+      position: relative;
+      width: 80%;
+      aspect-ratio: 1;
+      overflow: hidden;
+      border-radius: 50%;
+      background-image: radial-gradient(circle at 50% 38%, #fff8dc, var(--geiger-gauge-face) 58%, #c4ab70);
+      box-shadow:
+        inset 0 2px 6px rgb(0 0 0 / 0.55),
+        0 0 calc(var(--media-spacing) * 4) rgb(255 190 90 / 0.45);
+    }
+
+    /* Ticks along the arc, and the red zone at the hot end. */
+    .geiger-gauge-face::before,
+    .geiger-gauge-face::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      mask-image:
+        radial-gradient(circle at 50% 64%, transparent 0 46%, #000 47% 58%, transparent 59%),
+        conic-gradient(from -60deg at 50% 64%, #000 0 120deg, transparent 0);
+      mask-composite: intersect;
+    }
+
+    .geiger-gauge-face::before {
+      background-image: repeating-conic-gradient(from -60.75deg at 50% 64%, var(--geiger-gauge-ink) 0 1.5deg, transparent 0 12deg);
+    }
+
+    .geiger-gauge-face::after {
+      background-image: conic-gradient(from 30deg at 50% 64%, var(--geiger-gauge-red) 0 30deg, transparent 0);
+      opacity: 0.85;
+    }
+
+    .geiger-gauge-word {
+      position: absolute;
+      inset-inline: 0;
+      top: 26%;
+      font-family: var(--geiger-font-ui);
+      font-size: calc(var(--geiger-gauge) * 0.11);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-align: center;
+      text-transform: uppercase;
+      color: var(--geiger-gauge-ink);
+    }
+
+    .geiger-gauge-needle {
+      position: absolute;
+      z-index: 1;
+      left: calc(50% - 1px);
+      bottom: 36%;
+      width: 2px;
+      height: 46%;
+      transform-origin: 50% 100%;
+      rotate: calc(-60deg + var(--geiger-level, 0) * 120deg);
+      background-image: linear-gradient(to top, var(--geiger-gauge-ink) 60%, var(--geiger-gauge-red) 60%);
+      transition: rotate 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* The pivot. */
+    .geiger-gauge-needle::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: calc(var(--geiger-gauge) * 0.09);
+      aspect-ratio: 1;
+      translate: -50% 50%;
+      border-radius: 50%;
+      background-image: radial-gradient(circle at 35% 35%, #6b655a, #1d1a14);
+    }
+
+    :scope:has(geiger-status:is([data-mode="play"], [data-mode="fast"], [data-mode="slow"], [data-mode="live"])) .geiger-gauge-needle {
+      animation: geiger-tremble 0.45s steps(3) infinite;
+    }
+
+    /* ---------------------------------------------------------------- Fitting the space */
+
+    @media (pointer: coarse) {
+      :scope {
+        --geiger-key: calc(var(--media-spacing) * 12);
+      }
+    }
+
+    /* The side column is tall; on shorter devices the gauge and the knob labels give way first. */
+    @container media-root (width < 66rem) {
+      .geiger-side .geiger-gauge {
+        display: none;
+      }
+    }
+
+    @container media-root (width < 58rem) {
+      .geiger-knob-label {
+        display: none;
+      }
+    }
+
+    /* Smaller players fold the grip and side column away; the status panel's buttons take over. */
+    @container media-root (width < 52rem) {
+      .geiger-grip,
+      .geiger-side {
+        display: none;
+      }
+
+      .geiger-stats .geiger-compact {
+        display: flex;
+      }
+
+      .geiger-ecg {
+        display: none;
+      }
+
+      .geiger-stats .geiger-status {
+        min-width: 0;
+      }
+    }
+
+    /* `.geiger-stats` lifts these over the cells' own display rules. */
+    @container media-root (width < 60rem) {
+      .geiger-stats .geiger-stat-sig {
+        display: none;
+      }
+
+      .geiger-tapes {
+        width: calc(var(--media-spacing) * 54);
+      }
+    }
+
+    @container media-root (width < 50rem) {
+      .geiger-screen,
+      .geiger-chin {
+        --geiger-inset: calc(var(--media-spacing) * 3);
+        --geiger-chin: calc(var(--media-spacing) * 19);
+        --geiger-key: calc(var(--media-spacing) * 9.5);
+        --geiger-gauge: calc(var(--media-spacing) * 16);
+      }
+
+      .geiger-tapes,
+      .geiger-grille,
+      .geiger-status-note {
+        display: none;
+      }
+
+      .geiger-welcome {
+        font-size: calc(var(--media-spacing) * 7);
+      }
+    }
+
+    @container media-root (width < 42rem) {
+      .geiger-screen,
+      .geiger-chin {
+        --geiger-bezel: calc(var(--media-spacing) * 2.5);
+        --geiger-screen-radius: calc(var(--media-spacing) * 4);
+      }
+
+      .geiger-stats .geiger-stat-spd,
+      .geiger-ecg,
+      .geiger-clock-date,
+      .geiger-id-chapter,
+      .geiger-brand {
+        display: none;
+      }
+
+      .geiger-end {
+        row-gap: calc(var(--media-spacing) * 22);
+      }
+
+      .geiger-end-title {
+        font-size: calc(var(--media-spacing) * 6.5);
+      }
+
+      .geiger-end .geiger-script {
+        font-size: calc(var(--media-spacing) * 6);
+      }
+
+      .geiger-boot {
+        font-size: calc(var(--media-spacing) * 3.75);
+      }
+    }
+
+    @container media-root (width < 34rem) {
+      .geiger-screen,
+      .geiger-chin {
+        --geiger-inset: calc(var(--media-spacing) * 2);
+        --geiger-chin: calc(var(--media-spacing) * 18);
+        --geiger-key: calc(var(--media-spacing) * 8.5);
+        --geiger-gauge: calc(var(--media-spacing) * 13);
+      }
+
+      .geiger-stat-vol .geiger-stat-readout,
+      .geiger-volume-slider,
+      .media-pip-button,
+      .geiger-time-duration,
+      .geiger-welcome {
+        display: none;
+      }
+
+      .geiger-stat {
+        min-width: 0;
+      }
+
+      .geiger-status {
+        padding-inline: calc(var(--media-spacing) * 2);
+      }
+
+      .geiger-header {
+        padding: calc(var(--media-spacing) * 1.5) calc(var(--media-spacing) * 2);
+      }
+
+      .geiger-emblem {
+        width: calc(var(--media-spacing) * 7.5);
+        height: calc(var(--media-spacing) * 7.5);
+      }
+
+      .geiger-title {
+        font-size: calc(var(--media-spacing) * 4);
+      }
+
+      .geiger-keys {
+        gap: calc(var(--media-spacing) * 6);
+      }
+    }
+
+    /* Small players: the hardware PLAY key and the tap gesture take over from the centre controls. */
+    @container media-root (width < 28rem) {
+      .geiger-screen,
+      .geiger-chin {
+        --geiger-bezel: calc(var(--media-spacing) * 1.5);
+      }
+
+      .video-controls-center,
+      .geiger-emblem,
+      .geiger-clock,
+      .geiger-gauge,
+      .geiger-chin::before,
+      .geiger-chin::after {
+        display: none;
+      }
+
+      .geiger-chin {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+
+      .geiger-keys {
+        grid-column: 1;
+      }
+
+      .geiger-end-title {
+        font-size: calc(var(--media-spacing) * 5);
+      }
+
+      .geiger-stats .geiger-status {
+        display: none;
+      }
+
+      .geiger-panel {
+        gap: var(--media-spacing);
+        padding: calc(var(--media-spacing) * 1.5) calc(var(--media-spacing) * 2);
+      }
+
+      .geiger-tape-row {
+        gap: calc(var(--media-spacing) * 2);
+      }
+
+      .video-controls-end {
+        border-inline-start: 0;
+      }
+    }
+
+    /* ---------------------------------------------------------------- Preferences */
+
+    @media (prefers-reduced-motion: reduce) {
+      :scope:has(.media-play-button[data-started]) .geiger-boot {
+        animation: none;
+        visibility: hidden;
+      }
+
+      .geiger-welcome,
+      .geiger-boot-line,
+      .video-controls-center,
+      .geiger-end-title,
+      .geiger-radar,
+      .geiger-key-play,
+      .geiger-gauge-needle,
+      .geiger-status-mode {
+        animation: none !important;
+      }
+
+      .geiger-ecg {
+        animation-play-state: paused !important;
+      }
+
+      .geiger-gauge-needle {
+        transition: none;
+      }
+    }
+
+    @media (forced-colors: active) {
+      .geiger-screen,
+      .geiger-chin {
+        background-image: none;
+        background-color: Canvas;
+        border: 1px solid CanvasText;
+      }
+
+      .geiger-glass,
+      .geiger-grille,
+      .geiger-chin::before,
+      .geiger-chin::after {
+        display: none;
+      }
+
+      .geiger-key {
+        forced-color-adjust: none;
+        background-image: none;
+        background-color: ButtonFace;
+        border: 2px solid ButtonText;
+        box-shadow: none;
+      }
+
+      .geiger-tape[aria-current] {
+        forced-color-adjust: none;
+        background-color: Highlight;
+        color: HighlightText;
+      }
+
+      .geiger-bar-fill,
+      .geiger-bar-thumb {
+        forced-color-adjust: none;
+        background-color: Highlight;
+      }
+    }
+  }
+
+  @keyframes geiger-boot {
+    0% {
+      visibility: visible;
+      opacity: 1;
+      clip-path: inset(49.6% 0);
+      background-color: #d8ffe2;
+    }
+
+    6% {
+      clip-path: inset(49.6% 0);
+      background-color: #d8ffe2;
+    }
+
+    12% {
+      visibility: visible;
+      clip-path: inset(0);
+      background-color: #010502;
+    }
+
+    82% {
+      visibility: visible;
+      opacity: 1;
+      clip-path: inset(0);
+    }
+
+    100% {
+      visibility: hidden;
+      opacity: 0;
+      clip-path: inset(0);
+    }
+  }
+
+  @keyframes geiger-hold-hidden {
+    from,
+    to {
+      visibility: hidden;
+    }
+  }
+
+  @keyframes geiger-type {
+    from {
+      opacity: 1;
+      clip-path: inset(0 100% 0 0);
+    }
+
+    to {
+      opacity: 1;
+      clip-path: inset(0);
+    }
+  }
+
+  @keyframes geiger-flicker-in {
+    0%,
+    12%,
+    24% {
+      opacity: 0;
+    }
+
+    8%,
+    18%,
+    30%,
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes geiger-blink {
+    50% {
+      opacity: 0.25;
+    }
+  }
+
+  @keyframes geiger-spin {
+    to {
+      rotate: 1turn;
+    }
+  }
+
+  @keyframes geiger-ecg {
+    to {
+      background-position: calc(var(--media-spacing) * -27) 0;
+    }
+  }
+
+  @keyframes geiger-breathe {
+    50% {
+      filter: brightness(1.25) saturate(1.15);
+    }
+  }
+
+  @keyframes geiger-tremble {
+    0% {
+      transform: rotate(-1.4deg);
+    }
+
+    50% {
+      transform: rotate(1.1deg);
+    }
+
+    100% {
+      transform: rotate(-0.4deg);
+    }
+  }
+}

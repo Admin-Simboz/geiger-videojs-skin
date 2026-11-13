@@ -1,0 +1,277 @@
+/* The Geiger showcase page: a dark wasteland night, phosphor green type, amber for links. */
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Share+Tech+Mono&display=swap");
+
+:root {
+  --site-bg: #050a06;
+  --site-ink: #d6f5df;
+  --site-dim: rgb(214 245 223 / 0.66);
+  --site-green: #4dff7c;
+  --site-amber: #ffb02e;
+  --site-rule: rgb(77 255 124 / 0.22);
+  --site-glow: 0 0 6px rgb(77 255 124 / 0.6), 0 0 22px rgb(77 255 124 / 0.25);
+  --site-gutter: clamp(16px, 4vw, 48px);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.site {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--site-ink);
+  background-color: var(--site-bg);
+  /* A dusk horizon behind the device. */
+  background-image:
+    radial-gradient(90% 55% at 50% 0%, rgb(255 120 40 / 0.16), transparent 70%),
+    radial-gradient(70% 50% at 50% 100%, rgb(77 255 124 / 0.07), transparent 70%),
+    repeating-linear-gradient(to bottom, rgb(0 0 0 / 0.18) 0 1px, transparent 1px 3px);
+  background-attachment: fixed;
+}
+
+a {
+  color: var(--site-amber);
+  text-underline-offset: 3px;
+}
+
+a:focus-visible,
+.site-player:focus-visible {
+  outline: 2px solid var(--site-amber);
+  outline-offset: 3px;
+}
+
+.site-skip {
+  position: absolute;
+  left: var(--site-gutter);
+  top: -100px;
+  padding: 8px 14px;
+  background: var(--site-green);
+  color: var(--site-bg);
+  font-weight: 700;
+}
+
+.site-skip:focus {
+  top: 12px;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px var(--site-gutter);
+}
+
+.site-wordmark {
+  font-family: "Share Tech Mono", ui-monospace, monospace;
+  font-size: 22px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--site-green);
+  text-shadow: var(--site-glow);
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 15px;
+}
+
+.site-nav a {
+  color: var(--site-dim);
+  text-decoration: none;
+}
+
+.site-nav a:hover {
+  color: var(--site-green);
+}
+
+.site-hero,
+.site-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--site-gutter);
+}
+
+.site-hero {
+  padding-top: clamp(24px, 6vw, 64px);
+  text-align: center;
+}
+
+.site-kicker,
+.site-label {
+  font-family: "Share Tech Mono", ui-monospace, monospace;
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--site-green);
+}
+
+.site-kicker {
+  margin: 0 0 12px;
+}
+
+.site-title {
+  margin: 0;
+  font-size: clamp(38px, 7vw, 84px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.site-glow {
+  display: block;
+  color: var(--site-green);
+  text-shadow: var(--site-glow);
+}
+
+.site-lede {
+  max-width: 44rem;
+  margin: 20px auto 40px;
+  font-size: clamp(18px, 2vw, 21px);
+  color: var(--site-dim);
+}
+
+.site-player {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.site-caption {
+  margin: 18px auto 0;
+  font-size: 16px;
+  color: var(--site-dim);
+}
+
+.site-section {
+  padding-top: clamp(56px, 9vw, 112px);
+}
+
+.site-heading {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 28px;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.site-notes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-note {
+  padding: 22px;
+  border: 1px solid var(--site-rule);
+  border-radius: 12px;
+  background: rgb(3 18 8 / 0.6);
+}
+
+.site-note h3 {
+  margin: 8px 0 6px;
+  font-size: 22px;
+  color: var(--site-green);
+}
+
+.site-note p {
+  margin: 0;
+  color: var(--site-dim);
+}
+
+.site-split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 48px;
+}
+
+.site-checks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+
+.site-checks li {
+  position: relative;
+  padding-left: 26px;
+  color: var(--site-dim);
+}
+
+.site-checks li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: var(--site-green);
+}
+
+.site-keys {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.site-keys div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--site-rule);
+}
+
+.site-keys dt {
+  margin: 0;
+}
+
+.site-keys dd {
+  margin: 0;
+  color: var(--site-dim);
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.8em;
+  padding: 1px 7px;
+  font-family: "Share Tech Mono", ui-monospace, monospace;
+  font-size: 15px;
+  text-align: center;
+  color: var(--site-green);
+  border: 1px solid var(--site-rule);
+  border-radius: 5px;
+  background: rgb(3 18 8 / 0.8);
+}
+
+.site-footer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(56px, 9vw, 112px) var(--site-gutter) 40px;
+  font-size: 15px;
+  color: var(--site-dim);
+}
+
+.site-footer p {
+  margin: 4px 0;
+}
+
+/* Player elements only provide state; the skin inside them is the box that gets sized. */
+media-i18n,
+video-player {
+  display: contents;
+}

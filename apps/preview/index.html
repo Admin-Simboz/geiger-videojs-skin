@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Geiger · A survivor's terminal skin for Video.js</title>
+    <meta name="description" content="Inspired by Fallout’s Pip-Boy, Geiger turns the Video.js v10 player into a survivor's field terminal: a green-phosphor CRT with a heads-up display, holotape chapters, a heartbeat that beats while the tape plays, and amber hardware keys beside a rad gauge that reads the volume." />
+    <meta name="theme-color" content="#050a06" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='10' fill='%23050a06'/%3E%3Ccircle cx='24' cy='24' r='17' fill='none' stroke='%234dff7c' stroke-width='3'/%3E%3Cpath d='M15 28a9 9 0 0 1 18 0z' fill='%234dff7c'/%3E%3Cpath d='M12 31h24' stroke='%234dff7c' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E" />
+  </head>
+  <body class="site">
+    <a class="site-skip" href="#player">Skip to the player</a>
+
+    <header class="site-header">
+      <span class="site-wordmark">Geiger</span>
+      <nav class="site-nav" aria-label="Site">
+        <a href="#notes">Field notes</a>
+        <a href="#access">Access</a>
+        <a href="./workbench.html">Workbench</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="site-hero" aria-labelledby="hero-title">
+        <p class="site-kicker">A skin for Video.js v10 · Inspired by Fallout’s Pip-Boy</p>
+        <h1 id="hero-title" class="site-title">The world ended. <span class="site-glow">The show didn’t.</span></h1>
+        <p class="site-lede">
+          Inspired by the Pip-Boy from Fallout, Geiger turns the player into a survivor’s wrist terminal: a green-phosphor screen that boots up when you press
+          play, holotapes for chapters, and amber hardware keys beside a rad gauge that reads the volume.
+        </p>
+        <div id="player" class="site-player" tabindex="-1"></div>
+        <p class="site-caption">Try it: press the glowing PLAY key, spin the TUNING knob, then turn VOLUME and watch the rad needle.</p>
+      </section>
+
+      <section id="notes" class="site-section" aria-labelledby="notes-title">
+        <h2 id="notes-title" class="site-heading"><span class="site-label">Log</span> Field notes</h2>
+        <ol class="site-notes">
+          <li class="site-note">
+            <span class="site-label">01</span>
+            <h3>The device is the player</h3>
+            <p>A rugged wrist terminal: a green CRT in rusted gunmetal, a ribbed grip, two knobs, an amber key plate and a rad gauge. Every part of the hardware is a working control.</p>
+          </li>
+          <li class="site-note">
+            <span class="site-label">02</span>
+            <h3>It boots</h3>
+            <p>The poster says “Welcome back, Survivor.” Press play and the tube powers on from a single bright line, runs its self-check, and hands over to the picture, with a little power-up chirp.</p>
+          </li>
+          <li class="site-note">
+            <span class="site-label">03</span>
+            <h3>Holotapes are chapters</h3>
+            <p>Pause and the chapters slide in as a holotape list, the current one lit up. Pick one to wind there and play. The header always names the chapter you’re in.</p>
+          </li>
+          <li class="site-note">
+            <span class="site-label">04</span>
+            <h3>Vitals you can use</h3>
+            <p>VOL’s bar is the volume slider. SPD steps the speed. SIG shows how much tape is buffered ahead. A heartbeat runs while the tape plays and flatlines when you pause.</p>
+          </li>
+          <li class="site-note">
+            <span class="site-label">05</span>
+            <h3>Turn the knobs</h3>
+            <p>Drag, scroll or arrow-key the VOLUME knob, and spin the TUNING dial to wind the tape. The side plate lights a marker beside what’s on, PREV and NEXT skip chapters, and the rad gauge reads the volume.</p>
+          </li>
+          <li class="site-note">
+            <span class="site-label">06</span>
+            <h3>It talks back</h3>
+            <p>The status line keeps you company: “All quiet out there.” “Take a breather, Survivor.” Seeking crackles like a Geiger counter, and the end of the tape reads “Signal lost.”</p>
+          </li>
+        </ol>
+      </section>
+
+      <section id="access" class="site-section site-split" aria-labelledby="access-title">
+        <div>
+          <h2 id="access-title" class="site-heading"><span class="site-label">Protocol</span> Made for everyone</h2>
+          <ul class="site-checks">
+            <li>Every control is reachable by keyboard, in visual order, with a visible amber focus ring.</li>
+            <li>Dark, near-opaque panels keep the glowing text legible over any footage.</li>
+            <li>The holotapes are real buttons in a labelled list, with the current chapter announced.</li>
+            <li>Layouts adapt from wide screens down to 340px phones; touch keys grow on coarse pointers.</li>
+            <li>Reduced motion skips the boot, the heartbeat, the breathing key and the trembling needle.</li>
+            <li>Sounds are synthesised, quiet, and silent whenever the player is muted.</li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="site-heading"><span class="site-label">Manual</span> Keyboard</h2>
+          <dl class="site-keys">
+            <div><dt><kbd>Space</kbd> <kbd>K</kbd></dt><dd>Play / pause</dd></div>
+            <div><dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Seek</dd></div>
+            <div><dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Volume</dd></div>
+            <div><dt><kbd>M</kbd></dt><dd>Mute</dd></div>
+            <div><dt><kbd>F</kbd></dt><dd>Fullscreen</dd></div>
+            <div><dt><kbd>C</kbd></dt><dd>Captions</dd></div>
+            <div><dt><kbd>0</kbd>–<kbd>9</kbd></dt><dd>Jump to 0–90%</dd></div>
+          </dl>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Designed by Ammar Yasir for the Video.js Skins Design Challenge · Contra × Mux. Inspired by the Pip-Boy from the Fallout games.</p>
+      <p>Fan tribute: all artwork and code are original. Fallout and Pip-Boy are trademarks of Bethesda Softworks LLC / ZeniMax Media; this project is not affiliated with or endorsed by them.</p>
+      <p>Video.js v10 · Apache-2.0 · Footage: <a href="https://www.framer.com/@ammar-yasir-1bsb76/">Selected Works</a>, Ammar Yasir’s Framer templates, streamed by Mux.</p>
+    </footer>
+
+    <script type="module" src="/src/site/main.ts"></script>
+  </body>
+</html>

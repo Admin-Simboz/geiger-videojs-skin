@@ -1,0 +1,616 @@
+<media-container class="media-skin media-container media-video" data-theme="geiger" data-preset="video">
+  <!-- The rubber grip down the device's left edge. -->
+  <div class="geiger-grip" aria-hidden="true"></div>
+
+  <!-- The screen: a green-phosphor CRT. Everything the terminal draws lives in here; the hardware sits around it. -->
+  <div class="geiger-screen">
+    <div class="geiger-media">
+      <!-- Add a compatible media component here. -->
+    </div>
+    <media-poster class="media-poster">
+      <img alt="" decoding="async" class="media-poster-image">
+    </media-poster>
+
+    <!--
+      Screen cards, all decorative. Welcome: on the poster until the first play. Boot: the terminal powering up as the
+      first play starts. Signal lost: at the end of the tape.
+    -->
+    <div class="geiger-card geiger-welcome" aria-hidden="true">
+      <span class="geiger-script">Welcome back,</span>
+      <span class="geiger-script geiger-script-big">Survivor</span>
+    </div>
+    <div class="geiger-card geiger-boot" aria-hidden="true">
+      <span class="geiger-boot-line">Geiger OS 2.1 · Field unit G-9</span>
+      <span class="geiger-boot-line">Rad shielding ........ OK</span>
+      <span class="geiger-boot-line">Signal lock ......... OK</span>
+      <span class="geiger-boot-line">Loading holotape ....</span>
+    </div>
+    <div class="geiger-card geiger-end" aria-hidden="true">
+      <span class="geiger-end-title">Signal lost</span>
+      <span class="geiger-script">See you out there, Survivor.</span>
+    </div>
+
+    <media-error-dialog>
+      <media-dialog-backdrop class="media-dialog-backdrop"></media-dialog-backdrop>
+      <media-dialog-popup class="media-dialog-popup">
+        <span class="geiger-dialog-label" aria-hidden="true">⚠ Holotape damaged</span>
+        <media-dialog-title class="media-dialog-title"></media-dialog-title>
+        <media-dialog-description class="media-dialog-description"></media-dialog-description>
+        <media-dialog-close class="media-button media-dialog-close"></media-dialog-close>
+      </media-dialog-popup>
+    </media-error-dialog>
+
+    <media-controls>
+      <media-controls-backdrop class="video-controls-backdrop"></media-controls-backdrop>
+
+      <media-controls-group class="media-buffering-indicator-controls">
+        <!-- Buffering: the terminal sweeps for a signal. -->
+        <media-buffering-indicator class="media-buffering-indicator media-buffering-indicator-backdrop">
+          <span class="geiger-radar" aria-hidden="true"></span>
+        </media-buffering-indicator>
+      </media-controls-group>
+
+      <media-controls-content class="video-controls-content">
+        <media-tooltip-group>
+          <!-- The terminal's header: who's playing, and the clock. -->
+          <media-controls-group class="video-controls-top geiger-header">
+            <div class="geiger-id">
+              <svg class="geiger-emblem" viewBox="0 0 48 48" aria-hidden="true">
+                <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                <path d="M11 29h26M14.5 33.5h19M18.5 38h11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M15 27a9 9 0 0 1 18 0z" fill="currentColor"/>
+                <path d="M24 9v5M12.7 13.7l3.5 3.5M35.3 13.7l-3.5 3.5M7.5 24h4.5M36 24h4.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+              <div class="geiger-id-text">
+                <media-title class="media-title geiger-title"></media-title>
+                <geiger-chapter class="geiger-id-chapter">Ch. <span data-part="number">01</span> · <span data-part="name"></span></geiger-chapter>
+              </div>
+            </div>
+
+            <media-airplay-button class="media-button media-airplay-button" id="geiger-airplay-trigger">
+              <media-icon family="geiger" name="airplay-enter" class="media-button-icon media-airplay-button-enter-icon"></media-icon>
+              <media-icon family="geiger" name="airplay-exit" class="media-button-icon media-airplay-button-exit-icon"></media-icon>
+            </media-airplay-button>
+            <media-tooltip trigger="geiger-airplay-trigger" side="bottom" class="media-popup media-popup-safe-area media-tooltip-popup media-tooltip-screen-popup">
+              <media-tooltip-label></media-tooltip-label>
+              <media-tooltip-shortcut class="media-tooltip-shortcut"></media-tooltip-shortcut>
+            </media-tooltip>
+
+            <media-cast-button class="media-button media-cast-button" id="geiger-cast-trigger">
+              <media-icon family="geiger" name="cast-enter" class="media-button-icon media-cast-button-enter-icon"></media-icon>
+              <media-icon family="geiger" name="cast-exit" class="media-button-icon media-cast-button-exit-icon"></media-icon>
+            </media-cast-button>
+            <media-tooltip trigger="geiger-cast-trigger" side="bottom" class="media-popup media-popup-safe-area media-tooltip-popup media-tooltip-screen-popup">
+              <media-tooltip-label></media-tooltip-label>
+              <media-tooltip-shortcut class="media-tooltip-shortcut"></media-tooltip-shortcut>
+            </media-tooltip>
+
+            <geiger-clock class="geiger-clock">
+              <span class="geiger-clock-time" data-part="time"></span>
+              <span class="geiger-clock-date" data-part="date"></span>
+            </geiger-clock>
+          </media-controls-group>
+
+          <media-buffering-indicator class="video-controls-buffering">
+            <media-controls-group class="video-controls-center">
+              <media-seek-button seconds="-10" class="media-button video-controls-center-button video-controls-center-seek" id="geiger-center-back-trigger">
+                <div class="media-seek-button-content">
+                  <media-icon family="geiger" name="seek" class="media-button-icon media-seek-button-backward-icon video-controls-center-seek-icon"></media-icon>
+                  <span class="media-seek-button-label media-seek-button-backward-label">10</span>
+                </div>
+              </media-seek-button>
+              <media-tooltip trigger="geiger-center-back-trigger" disabled side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+                <media-tooltip-label></media-tooltip-label>
+                <media-tooltip-shortcut class="media-tooltip-shortcut"></media-tooltip-shortcut>
+              </media-tooltip>
+
+              <media-play-button class="media-button media-play-button video-controls-center-button video-controls-center-play" id="geiger-center-play-trigger">
+                <media-icon family="geiger" name="restart" class="media-button-icon-base media-play-button-restart-icon video-controls-center-play-icon"></media-icon>
+                <media-icon family="geiger" name="play" class="media-button-icon-base media-play-button-play-icon video-controls-center-play-icon"></media-icon>
+                <media-icon family="geiger" name="pause" class="media-button-icon-base media-play-button-pause-icon video-controls-center-play-icon"></media-icon>
+              </media-play-button>
+              <media-tooltip trigger="geiger-center-play-trigger" disabled side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+                <media-tooltip-label></media-tooltip-label>
+                <media-tooltip-shortcut class="media-tooltip-shortcut"></media-tooltip-shortcut>
+              </media-tooltip>
+
+              <media-seek-button seconds="10" class="media-button video-controls-center-button video-controls-center-seek" id="geiger-center-forward-trigger">
+                <div class="media-seek-button-content">
+                  <media-icon family="geiger" name="seek" class="media-button-icon video-controls-center-seek-icon"></media-icon>
+                  <span class="media-seek-button-label media-seek-button-forward-label">10</span>
+                </div>
+              </media-seek-button>
+              <media-tooltip trigger="geiger-center-forward-trigger" disabled side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+                <media-tooltip-label></media-tooltip-label>
+                <media-tooltip-shortcut class="media-tooltip-shortcut"></media-tooltip-shortcut>
+              </media-tooltip>
+            </media-controls-group>
+          </media-buffering-indicator>
+
+          <!-- Holotapes: the chapters, shown while paused. Pick one to wind there and play. -->
+          <geiger-tapes class="geiger-tapes">
+            <span class="geiger-tapes-title" aria-hidden="true">Holotapes</span>
+            <ol class="geiger-tapes-list" aria-label="Chapters"></ol>
+            <template>
+              <li>
+                <button type="button" class="geiger-tape">
+                  <span class="geiger-tape-mark" aria-hidden="true"></span>
+                  <span class="geiger-tape-number" data-part="number" aria-hidden="true"></span>
+                  <span class="geiger-tape-name" data-part="name" aria-hidden="true"></span>
+                </button>
+              </li>
+            </template>
+          </geiger-tapes>
+
+          <!-- The status panel along the bottom of the screen. -->
+          <div class="video-controls-bottom video-controls-video-bottom geiger-panel">
+            <div class="video-controls-slider-row geiger-tape-row">
+              <media-time type="current" class="geiger-time"></media-time>
+              <media-time-slider class="media-time-slider" thumb-alignment="edge">
+                <media-time-slider-chapters class="media-time-slider-chapters">
+                  <template>
+                    <div class="media-time-slider-chapter">
+                      <media-slider-track class="media-time-slider-track">
+                        <media-slider-buffer class="media-time-slider-buffer"></media-slider-buffer>
+                        <media-slider-fill class="media-time-slider-fill"></media-slider-fill>
+                      </media-slider-track>
+                    </div>
+                  </template>
+                </media-time-slider-chapters>
+                <media-slider-thumb class="media-time-slider-thumb"></media-slider-thumb>
+                <media-slider-preview class="media-time-slider-preview">
+                  <media-slider-thumbnail class="media-slider-thumbnail">
+                    <img alt="" aria-hidden="true" decoding="async" class="media-slider-thumbnail-image">
+                  </media-slider-thumbnail>
+                  <div class="media-time-slider-preview-meta">
+                    <div class="media-time-slider-preview-label">
+                      <media-slider-value class="media-time-slider-value" type="pointer"></media-slider-value>
+                      <media-time-slider-chapter-title class="media-time-slider-chapter-title"></media-time-slider-chapter-title>
+                    </div>
+                  </div>
+                </media-slider-preview>
+              </media-time-slider>
+              <media-time type="duration" class="geiger-time geiger-time-duration"></media-time>
+            </div>
+
+            <media-controls-group class="video-controls-row geiger-stats">
+              <!-- VOL: the mute key, the level, and the bar is the volume slider. -->
+              <div class="geiger-stat geiger-stat-vol">
+                <media-mute-button class="media-button media-mute-button geiger-stat-key" id="geiger-mute-trigger">
+                  <media-icon family="geiger" name="volume-off" class="media-button-icon media-mute-button-off-icon"></media-icon>
+                  <media-icon family="geiger" name="volume-high" class="media-button-icon media-mute-button-high-icon"></media-icon>
+                </media-mute-button>
+                <media-tooltip trigger="geiger-mute-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+                  <media-tooltip-label></media-tooltip-label>
+                  <media-tooltip-shortcut class="media-tooltip-shortcut"></media-tooltip-shortcut>
+                </media-tooltip>
+                <geiger-volume-level class="geiger-stat-readout">
+                  <span class="geiger-stat-label">Vol</span>
+                  <span class="geiger-stat-value" data-part="value">100%</span>
+                </geiger-volume-level>
+                <media-volume-slider class="geiger-bar geiger-volume-slider" orientation="horizontal" thumb-alignment="edge">
+                  <media-slider-track class="geiger-bar-track">
+                    <media-slider-fill class="geiger-bar-fill"></media-slider-fill>
+                  </media-slider-track>
+                  <media-slider-thumb class="geiger-bar-thumb"></media-slider-thumb>
+                </media-volume-slider>
+              </div>
+
+              <!-- SPD: the playback speed; the cell is a button that steps it. -->
+              <geiger-rate class="geiger-stat geiger-stat-spd">
+                <button type="button" class="geiger-stat-button">
+                  <media-icon family="geiger" name="bolt" class="geiger-stat-icon"></media-icon>
+                  <span class="geiger-stat-readout" aria-hidden="true">
+                    <span class="geiger-stat-label">Spd</span>
+                    <span class="geiger-stat-value" data-part="value">1×</span>
+                  </span>
+                  <span class="geiger-bar geiger-bar-static" aria-hidden="true"><span class="geiger-bar-fill"></span></span>
+                </button>
+              </geiger-rate>
+
+              <!-- SIG: how much tape is buffered ahead. -->
+              <geiger-signal class="geiger-stat geiger-stat-sig">
+                <media-icon family="geiger" name="signal" class="geiger-stat-icon"></media-icon>
+                <span class="geiger-stat-readout">
+                  <span class="geiger-stat-label">Sig</span>
+                  <span class="geiger-stat-value" data-part="value">0%</span>
+                </span>
+                <span class="geiger-bar geiger-bar-static"><span class="geiger-bar-fill"></span></span>
+              </geiger-signal>
+
+              <!-- The vitals: a heartbeat while the tape plays, and the terminal's status line. -->
+              <geiger-status class="geiger-stat geiger-status">
+                <span class="geiger-ecg"></span>
+                <span class="geiger-status-text">
+                  <span class="geiger-status-mode" data-part="mode">Standby</span>
+                  <span class="geiger-status-note" data-part="note"></span>
+                </span>
+              </geiger-status>
+
+              <!-- On small players the side column hides, and these take over from its plate. -->
+              <media-controls-group class="video-controls-group video-controls-end geiger-compact">
+                <media-captions-button class="media-button media-captions-button" id="geiger-captions-trigger">
+                  <media-icon family="geiger" name="captions-off" class="media-button-icon media-captions-button-off-icon"></media-icon>
+                  <media-icon family="geiger" name="captions-on" class="media-button-icon media-captions-button-on-icon"></media-icon>
+                </media-captions-button>
+                <media-tooltip trigger="geiger-captions-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+                  <media-tooltip-label></media-tooltip-label>
+                  <media-tooltip-shortcut class="media-tooltip-shortcut"></media-tooltip-shortcut>
+                </media-tooltip>
+
+                <button commandfor="geiger-settings-popup" class="media-button" id="geiger-settings-trigger">
+                  <media-icon family="geiger" name="gear" class="media-button-icon"></media-icon>
+                  <media-text class="media-settings-button-label" token="menu.settings">Settings</media-text>
+                </button>
+                <media-tooltip trigger="geiger-settings-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+                  <media-text token="menu.settings">Settings</media-text>
+                </media-tooltip>
+
+                <media-pip-button class="media-button media-pip-button" id="geiger-pip-trigger">
+                  <media-icon family="geiger" name="pip-enter" class="media-button-icon media-pip-button-enter-icon"></media-icon>
+                  <media-icon family="geiger" name="pip-exit" class="media-button-icon media-pip-button-exit-icon"></media-icon>
+                </media-pip-button>
+                <media-tooltip trigger="geiger-pip-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+                  <media-tooltip-label></media-tooltip-label>
+                  <media-tooltip-shortcut class="media-tooltip-shortcut"></media-tooltip-shortcut>
+                </media-tooltip>
+
+                <media-fullscreen-button class="media-button media-fullscreen-button" id="geiger-fullscreen-trigger">
+                  <media-icon family="geiger" name="fullscreen-enter" class="media-button-icon media-fullscreen-button-enter-icon"></media-icon>
+                  <media-icon family="geiger" name="fullscreen-exit" class="media-button-icon media-fullscreen-button-exit-icon"></media-icon>
+                </media-fullscreen-button>
+                <media-tooltip trigger="geiger-fullscreen-trigger" side="top" class="media-popup media-popup-safe-area media-tooltip-popup">
+                  <media-tooltip-label></media-tooltip-label>
+                  <media-tooltip-shortcut class="media-tooltip-shortcut"></media-tooltip-shortcut>
+                </media-tooltip>
+              </media-controls-group>
+
+              <media-menu side="top" align="end" class="media-popup media-popup-safe-area media-menu-popup" id="geiger-settings-popup">
+                <media-menu-content class="media-menu-content">
+                  <media-menu-item commandfor="geiger-quality-content" class="media-menu-item">
+                    <media-text token="menu.quality">Quality</media-text>
+                    <span class="media-menu-hint">
+                      <span data-part="value" class="media-menu-hint-label"></span>
+                      <media-icon family="geiger" name="chevron" class="media-menu-forward-chevron"></media-icon>
+                    </span>
+                  </media-menu-item>
+                  <media-menu-content class="media-menu-content" id="geiger-quality-content">
+                    <media-menu-item class="media-menu-back-item">
+                      <media-icon family="geiger" name="chevron" class="media-menu-back-chevron"></media-icon>
+                      <media-text token="menu.quality">Quality</media-text>
+                    </media-menu-item>
+                    <media-menu-separator class="media-menu-separator"></media-menu-separator>
+                    <media-quality-radio-group class="media-menu-radio-group">
+                      <template>
+                        <media-menu-radio-item class="media-menu-radio-item">
+                          <span>
+                            <span data-part="label"></span>
+                            <sup data-part="tier" class="media-menu-tier"></sup>
+                          </span>
+                          <span data-part="badge" class="media-menu-badge"></span>
+                          <media-menu-item-indicator force-mount class="media-menu-indicator">
+                            <media-icon family="geiger" name="check" class="media-menu-radio-icon"></media-icon>
+                          </media-menu-item-indicator>
+                        </media-menu-radio-item>
+                      </template>
+                    </media-quality-radio-group>
+                  </media-menu-content>
+
+                  <media-menu-item commandfor="geiger-audio-content" class="media-menu-item">
+                    <media-text token="menu.audio">Audio</media-text>
+                    <span class="media-menu-hint">
+                      <span data-part="value" class="media-menu-hint-label"></span>
+                      <media-icon family="geiger" name="chevron" class="media-menu-forward-chevron"></media-icon>
+                    </span>
+                  </media-menu-item>
+                  <media-menu-content class="media-menu-content" id="geiger-audio-content">
+                    <media-menu-item class="media-menu-back-item">
+                      <media-icon family="geiger" name="chevron" class="media-menu-back-chevron"></media-icon>
+                      <media-text token="menu.audio">Audio</media-text>
+                    </media-menu-item>
+                    <media-menu-separator class="media-menu-separator"></media-menu-separator>
+                    <media-audio-track-radio-group class="media-menu-radio-group">
+                      <template>
+                        <media-menu-radio-item class="media-menu-radio-item">
+                          <span data-part="label"></span>
+                          <media-menu-item-indicator force-mount class="media-menu-indicator">
+                            <media-icon family="geiger" name="check" class="media-menu-radio-icon"></media-icon>
+                          </media-menu-item-indicator>
+                        </media-menu-radio-item>
+                      </template>
+                    </media-audio-track-radio-group>
+                  </media-menu-content>
+
+                  <media-menu-item commandfor="geiger-speed-content" class="media-menu-item">
+                    <media-text token="menu.speed">Speed</media-text>
+                    <span class="media-menu-hint">
+                      <span data-part="value" class="media-menu-hint-label"></span>
+                      <media-icon family="geiger" name="chevron" class="media-menu-forward-chevron"></media-icon>
+                    </span>
+                  </media-menu-item>
+                  <media-menu-content class="media-menu-content" id="geiger-speed-content">
+                    <media-menu-item class="media-menu-back-item">
+                      <media-icon family="geiger" name="chevron" class="media-menu-back-chevron"></media-icon>
+                      <media-text token="menu.speed">Speed</media-text>
+                    </media-menu-item>
+                    <media-menu-separator class="media-menu-separator"></media-menu-separator>
+                    <media-playback-rate-radio-group class="media-menu-radio-group">
+                      <template>
+                        <media-menu-radio-item class="media-menu-radio-item">
+                          <span data-part="label"></span>
+                          <media-menu-item-indicator force-mount class="media-menu-indicator">
+                            <media-icon family="geiger" name="check" class="media-menu-radio-icon"></media-icon>
+                          </media-menu-item-indicator>
+                        </media-menu-radio-item>
+                      </template>
+                    </media-playback-rate-radio-group>
+                  </media-menu-content>
+
+                  <media-menu-item commandfor="geiger-captions-content" class="media-menu-item">
+                    <media-text token="menu.captions">Captions</media-text>
+                    <span class="media-menu-hint">
+                      <span data-part="value" class="media-menu-hint-label"></span>
+                      <media-icon family="geiger" name="chevron" class="media-menu-forward-chevron"></media-icon>
+                    </span>
+                  </media-menu-item>
+                  <media-menu-content class="media-menu-content" id="geiger-captions-content">
+                    <media-menu-item class="media-menu-back-item">
+                      <media-icon family="geiger" name="chevron" class="media-menu-back-chevron"></media-icon>
+                      <media-text token="menu.captions">Captions</media-text>
+                    </media-menu-item>
+                    <media-menu-separator class="media-menu-separator"></media-menu-separator>
+                    <media-captions-radio-group class="media-menu-radio-group">
+                      <template>
+                        <media-menu-radio-item class="media-menu-radio-item">
+                          <span data-part="label"></span>
+                          <span data-part="badge" class="media-menu-badge"></span>
+                          <media-menu-item-indicator force-mount class="media-menu-indicator">
+                            <media-icon family="geiger" name="check" class="media-menu-radio-icon"></media-icon>
+                          </media-menu-item-indicator>
+                        </media-menu-radio-item>
+                      </template>
+                    </media-captions-radio-group>
+                  </media-menu-content>
+                </media-menu-content>
+              </media-menu>
+            </media-controls-group>
+          </div>
+        </media-tooltip-group>
+      </media-controls-content>
+    </media-controls>
+
+    <!-- CRT glass over everything the screen draws: scanlines, phosphor bloom, and the curve of the tube. -->
+    <div class="geiger-glass" aria-hidden="true"></div>
+
+    <media-status-announcer class="media-status-announcer"></media-status-announcer>
+
+    <div aria-hidden="true" class="media-indicator-group">
+      <media-volume-indicator class="media-indicator media-volume-indicator">
+        <media-volume-indicator-fill class="media-volume-indicator-fill">
+          <media-icon family="geiger" name="volume-high" class="media-volume-indicator-icon media-volume-indicator-high-icon"></media-icon>
+          <media-icon family="geiger" name="volume-low" class="media-volume-indicator-icon media-volume-indicator-low-icon"></media-icon>
+          <media-icon family="geiger" name="volume-off" class="media-volume-indicator-icon media-volume-indicator-off-icon"></media-icon>
+          <media-volume-indicator-value class="media-volume-indicator-value"></media-volume-indicator-value>
+        </media-volume-indicator-fill>
+      </media-volume-indicator>
+      <media-status-indicator actions="toggleSubtitles,toggleFullscreen,togglePictureInPicture" class="media-indicator media-status-indicator">
+        <media-icon family="geiger" name="captions-on" class="media-status-indicator-icon media-status-indicator-captions-on-icon"></media-icon>
+        <media-icon family="geiger" name="captions-off" class="media-status-indicator-icon media-status-indicator-captions-off-icon"></media-icon>
+        <media-icon family="geiger" name="fullscreen-enter" class="media-status-indicator-icon media-status-indicator-fullscreen-enter-icon"></media-icon>
+        <media-icon family="geiger" name="fullscreen-exit" class="media-status-indicator-icon media-status-indicator-fullscreen-exit-icon"></media-icon>
+        <media-icon family="geiger" name="pip-enter" class="media-status-indicator-icon media-status-indicator-pip-enter-icon"></media-icon>
+        <media-icon family="geiger" name="pip-exit" class="media-status-indicator-icon media-status-indicator-pip-exit-icon"></media-icon>
+        <media-status-indicator-value></media-status-indicator-value>
+      </media-status-indicator>
+      <media-seek-indicator class="media-indicator media-seek-indicator">
+        <media-icon family="geiger" name="chevron" class="media-seek-indicator-icon"></media-icon>
+        <media-seek-indicator-value class="media-seek-indicator-value"></media-seek-indicator-value>
+      </media-seek-indicator>
+    </div>
+  </div>
+
+  <!--
+    The side column: the volume knob, the amber menu plate, the rad gauge, and the tuning knob. The plate's keys are
+    the device's main controls; on small players they hide and the status panel's own buttons take over.
+  -->
+  <div class="geiger-side">
+    <span class="geiger-knob-cell">
+      <geiger-knob kind="volume" class="geiger-knob" aria-label="Volume"><span class="geiger-knob-cap"></span></geiger-knob>
+      <span class="geiger-knob-label" aria-hidden="true">Volume</span>
+    </span>
+
+    <div class="geiger-plate" role="group" aria-label="Device">
+      <media-play-button class="media-play-button geiger-plate-key">
+        <span class="geiger-plate-word geiger-word-play" aria-hidden="true">Play</span>
+        <span class="geiger-plate-word geiger-word-pause" aria-hidden="true">Pause</span>
+      </media-play-button>
+      <media-mute-button class="geiger-plate-key">
+        <span class="geiger-plate-word geiger-word-sound" aria-hidden="true">Audio</span>
+        <span class="geiger-plate-word geiger-word-muted" aria-hidden="true">Muted</span>
+      </media-mute-button>
+      <media-captions-button class="geiger-plate-key">
+        <span class="geiger-plate-word" aria-hidden="true">Captions</span>
+      </media-captions-button>
+      <button type="button" commandfor="geiger-plate-settings-popup" class="geiger-plate-key" id="geiger-plate-settings">
+        <media-text class="geiger-plate-word" token="menu.settings">Settings</media-text>
+      </button>
+      <media-pip-button class="geiger-plate-key">
+        <span class="geiger-plate-word" aria-hidden="true">Eject</span>
+      </media-pip-button>
+      <media-fullscreen-button class="geiger-plate-key">
+        <span class="geiger-plate-word" aria-hidden="true">Screen</span>
+      </media-fullscreen-button>
+    </div>
+    <!-- The plate opens its own copy of the settings menu: Video.js anchors a menu to the first button that names it. -->
+      <media-menu side="left" align="center" class="media-popup media-popup-safe-area media-menu-popup" id="geiger-plate-settings-popup">
+  <media-menu-content class="media-menu-content">
+    <media-menu-item commandfor="geiger-plate-quality-content" class="media-menu-item">
+      <media-text token="menu.quality">Quality</media-text>
+      <span class="media-menu-hint">
+        <span data-part="value" class="media-menu-hint-label"></span>
+        <media-icon family="geiger" name="chevron" class="media-menu-forward-chevron"></media-icon>
+      </span>
+    </media-menu-item>
+    <media-menu-content class="media-menu-content" id="geiger-plate-quality-content">
+      <media-menu-item class="media-menu-back-item">
+        <media-icon family="geiger" name="chevron" class="media-menu-back-chevron"></media-icon>
+        <media-text token="menu.quality">Quality</media-text>
+      </media-menu-item>
+      <media-menu-separator class="media-menu-separator"></media-menu-separator>
+      <media-quality-radio-group class="media-menu-radio-group">
+        <template>
+          <media-menu-radio-item class="media-menu-radio-item">
+            <span>
+              <span data-part="label"></span>
+              <sup data-part="tier" class="media-menu-tier"></sup>
+            </span>
+            <span data-part="badge" class="media-menu-badge"></span>
+            <media-menu-item-indicator force-mount class="media-menu-indicator">
+              <media-icon family="geiger" name="check" class="media-menu-radio-icon"></media-icon>
+            </media-menu-item-indicator>
+          </media-menu-radio-item>
+        </template>
+      </media-quality-radio-group>
+    </media-menu-content>
+
+    <media-menu-item commandfor="geiger-plate-audio-content" class="media-menu-item">
+      <media-text token="menu.audio">Audio</media-text>
+      <span class="media-menu-hint">
+        <span data-part="value" class="media-menu-hint-label"></span>
+        <media-icon family="geiger" name="chevron" class="media-menu-forward-chevron"></media-icon>
+      </span>
+    </media-menu-item>
+    <media-menu-content class="media-menu-content" id="geiger-plate-audio-content">
+      <media-menu-item class="media-menu-back-item">
+        <media-icon family="geiger" name="chevron" class="media-menu-back-chevron"></media-icon>
+        <media-text token="menu.audio">Audio</media-text>
+      </media-menu-item>
+      <media-menu-separator class="media-menu-separator"></media-menu-separator>
+      <media-audio-track-radio-group class="media-menu-radio-group">
+        <template>
+          <media-menu-radio-item class="media-menu-radio-item">
+            <span data-part="label"></span>
+            <media-menu-item-indicator force-mount class="media-menu-indicator">
+              <media-icon family="geiger" name="check" class="media-menu-radio-icon"></media-icon>
+            </media-menu-item-indicator>
+          </media-menu-radio-item>
+        </template>
+      </media-audio-track-radio-group>
+    </media-menu-content>
+
+    <media-menu-item commandfor="geiger-plate-speed-content" class="media-menu-item">
+      <media-text token="menu.speed">Speed</media-text>
+      <span class="media-menu-hint">
+        <span data-part="value" class="media-menu-hint-label"></span>
+        <media-icon family="geiger" name="chevron" class="media-menu-forward-chevron"></media-icon>
+      </span>
+    </media-menu-item>
+    <media-menu-content class="media-menu-content" id="geiger-plate-speed-content">
+      <media-menu-item class="media-menu-back-item">
+        <media-icon family="geiger" name="chevron" class="media-menu-back-chevron"></media-icon>
+        <media-text token="menu.speed">Speed</media-text>
+      </media-menu-item>
+      <media-menu-separator class="media-menu-separator"></media-menu-separator>
+      <media-playback-rate-radio-group class="media-menu-radio-group">
+        <template>
+          <media-menu-radio-item class="media-menu-radio-item">
+            <span data-part="label"></span>
+            <media-menu-item-indicator force-mount class="media-menu-indicator">
+              <media-icon family="geiger" name="check" class="media-menu-radio-icon"></media-icon>
+            </media-menu-item-indicator>
+          </media-menu-radio-item>
+        </template>
+      </media-playback-rate-radio-group>
+    </media-menu-content>
+
+    <media-menu-item commandfor="geiger-plate-captions-content" class="media-menu-item">
+      <media-text token="menu.captions">Captions</media-text>
+      <span class="media-menu-hint">
+        <span data-part="value" class="media-menu-hint-label"></span>
+        <media-icon family="geiger" name="chevron" class="media-menu-forward-chevron"></media-icon>
+      </span>
+    </media-menu-item>
+    <media-menu-content class="media-menu-content" id="geiger-plate-captions-content">
+      <media-menu-item class="media-menu-back-item">
+        <media-icon family="geiger" name="chevron" class="media-menu-back-chevron"></media-icon>
+        <media-text token="menu.captions">Captions</media-text>
+      </media-menu-item>
+      <media-menu-separator class="media-menu-separator"></media-menu-separator>
+      <media-captions-radio-group class="media-menu-radio-group">
+        <template>
+          <media-menu-radio-item class="media-menu-radio-item">
+            <span data-part="label"></span>
+            <span data-part="badge" class="media-menu-badge"></span>
+            <media-menu-item-indicator force-mount class="media-menu-indicator">
+              <media-icon family="geiger" name="check" class="media-menu-radio-icon"></media-icon>
+            </media-menu-item-indicator>
+          </media-menu-radio-item>
+        </template>
+      </media-captions-radio-group>
+    </media-menu-content>
+  </media-menu-content>
+              </media-menu>
+
+    <!-- The rad gauge reads the volume: the louder the tape, the hotter the needle. -->
+    <geiger-volume-level class="geiger-gauge">
+      <span class="geiger-gauge-face">
+        <span class="geiger-gauge-word">☢ Rads</span>
+        <span class="geiger-gauge-needle"></span>
+      </span>
+    </geiger-volume-level>
+
+    <span class="geiger-knob-cell">
+      <geiger-knob kind="tune" class="geiger-knob geiger-knob-tune" aria-label="Tuning: wind the tape"><span class="geiger-knob-cap"></span></geiger-knob>
+      <span class="geiger-knob-label" aria-hidden="true">Tuning</span>
+    </span>
+  </div>
+
+  <!-- The hardware below the screen: brand plate, the three transport keys, and the speaker grille. -->
+  <div class="geiger-chin">
+    <span class="geiger-brand" aria-hidden="true">Geiger</span>
+
+    <geiger-skip class="geiger-keys">
+      <span class="geiger-key-cell">
+        <span class="geiger-key-label" aria-hidden="true">Prev</span>
+        <button type="button" class="geiger-key" data-part="prev" aria-label="Previous chapter"></button>
+      </span>
+      <span class="geiger-key-cell">
+        <span class="geiger-key-label geiger-key-label-play" aria-hidden="true">
+          <span class="geiger-key-word-play">Play</span><span class="geiger-key-word-pause">Pause</span>
+        </span>
+        <media-play-button class="geiger-key geiger-key-play" id="geiger-play-trigger"></media-play-button>
+      </span>
+      <span class="geiger-key-cell">
+        <span class="geiger-key-label" aria-hidden="true">Next</span>
+        <button type="button" class="geiger-key" data-part="next" aria-label="Next chapter"></button>
+      </span>
+    </geiger-skip>
+
+    <span class="geiger-grille" aria-hidden="true"></span>
+
+  </div>
+
+  <media-hotkey keys="Space" action="togglePaused"></media-hotkey>
+  <media-hotkey keys="k" action="togglePaused"></media-hotkey>
+  <media-hotkey keys="m" action="toggleMuted"></media-hotkey>
+  <media-hotkey keys="ArrowRight" action="seekStep"></media-hotkey>
+  <media-hotkey keys="ArrowLeft" action="seekStep"></media-hotkey>
+  <media-hotkey keys="l" action="seekStep"></media-hotkey>
+  <media-hotkey keys="j" action="seekStep"></media-hotkey>
+  <media-hotkey keys="ArrowUp" action="volumeStep"></media-hotkey>
+  <media-hotkey keys="ArrowDown" action="volumeStep"></media-hotkey>
+  <media-hotkey keys="0-9" action="seekToPercent"></media-hotkey>
+  <media-hotkey keys="Home" action="seekToPercent" value="0"></media-hotkey>
+  <media-hotkey keys="End" action="seekToPercent" value="100"></media-hotkey>
+  <media-hotkey keys=">" action="speedUp"></media-hotkey>
+  <media-hotkey keys="<" action="speedDown"></media-hotkey>
+  <media-hotkey keys="f" action="toggleFullscreen"></media-hotkey>
+  <media-hotkey keys="c" action="toggleSubtitles"></media-hotkey>
+  <media-hotkey keys="i" action="togglePictureInPicture"></media-hotkey>
+
+  <media-gesture type="tap" action="togglePaused" pointer="mouse" region="center"></media-gesture>
+  <media-gesture type="tap" action="toggleControls" pointer="touch"></media-gesture>
+  <media-gesture type="doubletap" action="seekStep" region="left"></media-gesture>
+  <media-gesture type="doubletap" action="toggleFullscreen" region="center"></media-gesture>
+  <media-gesture type="doubletap" action="seekStep" region="right"></media-gesture>
+</media-container>

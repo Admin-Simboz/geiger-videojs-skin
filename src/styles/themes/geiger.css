@@ -1,0 +1,124 @@
+@layer base.theme, base.preset, base.preferences;
+
+/*
+ * Geiger theme tokens, inspired by the Pip-Boy from the Fallout games. A survivor's field terminal after the end of the world: a green-phosphor CRT with a glowing
+ * heads-up display, set in a scuffed gunmetal housing with amber transport keys and a rad gauge. Panels on the screen are
+ * dark and near-opaque so text stays legible over any footage. The public properties (--media-accent-color,
+ * --media-accent-text-color, --media-border-radius) still restyle it: the accent recolors the phosphor.
+ */
+@layer base.preset {
+  .media-skin[data-theme="geiger"] {
+    /* Phosphor. */
+    --geiger-green: var(--media-accent-color, #4dff7c);
+    --geiger-green-bright: #c8ffd6;
+    --geiger-green-dim: rgb(77 255 124 / 0.6);
+    --geiger-green-faint: rgb(77 255 124 / 0.16);
+    --geiger-panel: rgb(3 18 8 / 0.82);
+    --geiger-panel-solid: #04150a;
+    --geiger-line: rgb(77 255 124 / 0.42);
+    --geiger-glow: 0 0 6px rgb(77 255 124 / 0.55), 0 0 18px rgb(77 255 124 / 0.22);
+    --geiger-text-glow: 0 0 4px rgb(77 255 124 / 0.75), 0 0 14px rgb(77 255 124 / 0.35);
+
+    /* Hardware. */
+    --geiger-metal-hi: #4a4740;
+    --geiger-metal: #2b2925;
+    --geiger-metal-lo: #141310;
+    --geiger-rust: rgb(128 58 22 / 0.5);
+    --geiger-amber: #ffb02e;
+    --geiger-amber-hot: #ffd27a;
+    --geiger-lens: #ff7a18;
+    --geiger-gauge-face: #f2dfae;
+    --geiger-gauge-ink: #2a2116;
+    --geiger-gauge-red: #d8402a;
+
+    /* Type: a semi-condensed grotesk for the interface, a terminal mono for numbers, a neon script for greetings. */
+    --geiger-font-ui: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+    --geiger-font-mono: "Share Tech Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+    --geiger-font-script: "Yellowtail", "Brush Script MT", cursive;
+
+    /* Screen effects. Set either to 0 to switch it off. */
+    --geiger-scanlines: 0.14;
+    --geiger-vignette: 0.55;
+
+    /* Geometry. */
+    --geiger-bezel: calc(var(--media-spacing) * 3.5);
+    --geiger-chin: calc(var(--media-spacing) * 25);
+    --geiger-screen-radius: calc(var(--media-spacing) * 6);
+    --geiger-panel-radius: calc(var(--media-spacing) * 2.5);
+    --geiger-inset: calc(var(--media-spacing) * 4);
+    --geiger-key: calc(var(--media-spacing) * 11);
+    --geiger-gauge: calc(var(--media-spacing) * 17);
+    --geiger-side: calc(var(--media-spacing) * 40);
+    --geiger-knob: calc(var(--media-spacing) * 17);
+    /* Grime: blotchy fractal noise in rust and soot, laid over the gunmetal. */
+    --geiger-grime: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='g' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.06' numOctaves='4' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.24  0 0 0 0 0.12  0 0 0 0 0.05  0 0 0 -4.2 1.9'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23g)'/%3E%3C/svg%3E");
+
+    /* Motion. */
+    --geiger-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* Video.js tokens mapped onto the palette. */
+    --media-background: var(--geiger-panel-solid);
+    --media-foreground: var(--geiger-green);
+    --media-accent: var(--geiger-green);
+    --media-accent-foreground: var(--media-accent-text-color, var(--geiger-panel-solid));
+    --media-primary: var(--media-accent);
+    --media-primary-foreground: var(--media-accent-foreground);
+    --media-muted: var(--geiger-green-faint);
+    --media-muted-foreground: var(--geiger-green-dim);
+    --media-popover: var(--geiger-panel-solid);
+    --media-popover-foreground: var(--geiger-green);
+    --media-popover-boundary-offset: calc(var(--media-spacing) * 3);
+    --media-tooltip-boundary-offset: var(--media-popover-boundary-offset);
+    --media-ring: var(--geiger-amber);
+    --media-button-highlight: rgb(77 255 124 / 0.14);
+    --media-video-border-radius: var(--media-border-radius, calc(var(--media-spacing) * 7));
+    --media-control-radius: calc(var(--media-spacing) * 1.5);
+    --media-controls-radius: var(--geiger-panel-radius);
+    --media-menu-item-radius: calc(var(--media-spacing) * 1);
+    --media-popup-radius: var(--geiger-panel-radius);
+    --media-dialog-radius: var(--geiger-panel-radius);
+    --media-scrollbar-thumb-color: var(--geiger-line);
+    --media-shadow-surface: var(--geiger-glow);
+    --media-shadow-surface-inset: none;
+    --media-shadow-thumb: none;
+    --media-backdrop-filter-surface: none;
+    --media-backdrop-filter-indicator: none;
+    --media-backdrop-filter-dialog: none;
+  }
+
+  @media (prefers-contrast: more) {
+    .media-skin[data-theme="geiger"] {
+      --geiger-panel: var(--geiger-panel-solid);
+      --geiger-green-dim: var(--geiger-green);
+      --geiger-line: var(--geiger-green);
+      --geiger-scanlines: 0;
+      --geiger-vignette: 0;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .media-skin[data-theme="geiger"] {
+      --geiger-green: CanvasText;
+      --geiger-green-bright: CanvasText;
+      --geiger-green-dim: CanvasText;
+      --geiger-green-faint: Canvas;
+      --geiger-panel: Canvas;
+      --geiger-panel-solid: Canvas;
+      --geiger-line: CanvasText;
+      --geiger-glow: none;
+      --geiger-text-glow: none;
+      --geiger-amber: Highlight;
+      --geiger-lens: ButtonFace;
+      --geiger-scanlines: 0;
+      --geiger-vignette: 0;
+      --media-background: Canvas;
+      --media-popover: Canvas;
+      --media-popover-foreground: CanvasText;
+      --media-foreground: CanvasText;
+      --media-accent: Highlight;
+      --media-primary: Highlight;
+      --media-primary-foreground: HighlightText;
+      --media-ring: Highlight;
+    }
+  }
+}
